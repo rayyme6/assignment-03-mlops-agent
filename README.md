@@ -7,6 +7,12 @@ planning, evidence-based answers and explicit write authorization.
 [technical report](docs/technical-report.md) for measured results and remaining
 live verification requirements; do not present unavailable infrastructure as tested.
 
+Repository: https://github.com/rayyme6/assignment-03-mlops-agent
+
+The original evidence refers to development commit IDs. After cloning, run
+`git fetch history/development.bundle main:development-history` to restore those
+objects. See [history notes](history/README.md).
+
 ## 1. Install
 
 Use Python 3.12, Git and a POSIX shell. Docker, kind and kubectl are needed only
@@ -193,14 +199,11 @@ To exercise a cluster failure after a successful deployment, intentionally set
 and ask the agent to diagnose it. Restore the original path and restart to recover.
 This is a manual experiment in the dedicated namespace, not a claimed executed test.
 
-## 8. Publish the preserved Git history
+## 8. Repository and remaining verification
 
-After authenticating GitHub CLI on your machine:
+The project is published at https://github.com/rayyme6/assignment-03-mlops-agent.
+The connected API publishes each development snapshot as a milestone commit;
+`history/development.bundle` retains the original commit objects and timestamps.
+See [history notes](history/README.md) for restoring original provenance references.
 
-```bash
-gh repo create rayyme6/assignment-03-mlops-agent --private --source=. --remote=origin --push
-```
-
-The delivery archive includes `.git`, so the milestone commits are preserved.
-Repository creation and a green remote Actions run must be verified before
-submission. Do not backdate commits. The final checklist is in `docs/submission-checklist.md`.
+The remaining live checks are listed in `docs/submission-checklist.md`.

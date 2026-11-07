@@ -6,7 +6,7 @@
 - [x] Add Dockerfile, inference API and required Kubernetes manifests.
 - [x] Add meaningful pytest tests and pull-request CI configuration.
 - [x] Preserve actual milestone commits locally.
-- [ ] Create GitHub repository and push preserved commits.
+- [x] Create GitHub repository and publish milestone snapshots plus original-history bundle.
 - [ ] Verify green GitHub Actions run.
 - [ ] Run live LLM planner with privately configured API key.
 - [ ] Deploy on Kubernetes and export successful rollout plus diagnosis evidence.
