@@ -228,3 +228,62 @@ def test_actual_training_and_prediction(tmp_path, monkeypatch):
         assert r.status_code == 200 and r.json()["class"] == 0
         assert client.post("/predict", json={"features": [1, 2]}).status_code == 422
         assert client.post("/predict", json={"features": [-1, 2, 3, 4]}).status_code == 422
+
+
+def test_failed_gate_removes_stale_approval(tmp_path):
+    (tmp_path / "approved.json").write_text('{"old": true}')
+    (tmp_path / "metrics.json").write_text(json.dumps({"metrics": {"f1": 0.2}}))
+    with pytest.raises(ValueError):
+        quality_gate(tmp_path)
+    assert not (tmp_path / "approved.json").exists()
+
+
+def test_llm_plan_is_executed_but_cannot_authorize_writes(toolset, monkeypatch):
+    from agent.orchestrator import Call, Plan
+
+    client = Mock()
+    client.beta.chat.completions.parse.return_value = NS(
+        choices=[
+            NS(
+                message=NS(
+                    parsed=Plan(
+                        calls=[Call(tool="kubernetes", arguments=ToolInput(operation="restart"))]
+                    )
+                )
+            )
+        ]
+    )
+    monkeypatch.setattr("openai.OpenAI", lambda **kwargs: client)
+    answer = Agent(toolset).ask("Restart deployment", use_llm=True)
+    assert answer.evidence[0].status == "denied"
+    toolset["kubernetes"].execute.assert_not_called()
+
+
+def test_unhealthy_pod_diagnosis_uses_returned_logs(toolset):
+    def execute(a):
+        if a.operation == "pods":
+            return [
+                {
+                    "name": "iris-api-abc",
+                    "phase": "Running",
+                    "containers": [
+                        {
+                            "name": "api",
+                            "ready": False,
+                            "restart_count": 3,
+                            "state": {"waiting": {"reason": "CrashLoopBackOff"}},
+                        }
+                    ],
+                }
+            ]
+        if a.operation == "logs":
+            return {"logs": "Model file not found"}
+        return []
+
+    toolset["kubernetes"].execute.side_effect = execute
+    answer = Agent(toolset).ask("Why is the API unavailable?")
+    assert any("CrashLoopBackOff" in a for a in answer.recommendations)
+    assert any("restarts=3" in f for f in answer.facts)
+    assert any(
+        e.operation == "logs" and e.data["logs"] == "Model file not found" for e in answer.evidence
+    )

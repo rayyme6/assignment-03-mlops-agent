@@ -229,6 +229,49 @@ class Agent:
                     deployed = d["annotations"].get("mlops/run-id")
                     if best and deployed != best["run_id"]:
                         unknown.append("Selected candidate is not verified as the deployed run.")
+            elif source == "dvc.version":
+                facts.append("Verified committed dataset: " + json.dumps(e.data))
+                if best:
+                    expected = best["tags"].get("dataset.dvc_md5")
+                    recorded = e.data.get("dvc", {}).get("outs", [{}])[0].get("md5")
+                    if not expected or expected != recorded:
+                        unknown.append("MLflow dataset hash does not match a verified DVC pointer.")
+            elif source == "kubernetes.pods":
+                if not e.data:
+                    unknown.append("No matching application Pods were returned.")
+                for pod in e.data:
+                    facts.append(f"Pod {pod['name']} phase: {pod['phase']}.")
+                    for container in pod.get("containers", []):
+                        restarts = container.get("restart_count", 0)
+                        facts.append(
+                            f"Container {container.get('name')}: ready="
+                            f"{container.get('ready')}, restarts={restarts}."
+                        )
+                        waiting = (container.get("state") or {}).get("waiting")
+                        if waiting:
+                            actions.append(
+                                f"Investigate {waiting.get('reason')} on {pod['name']}; "
+                                "correlate events and application logs before restarting."
+                            )
+            elif source == "kubernetes.events":
+                for event in e.data:
+                    facts.append(f"Cluster event {event['reason']}: {event['message']}")
+            elif source == "airflow.runs":
+                runs = e.data.get("dag_runs", [])
+                if runs:
+                    facts.append(
+                        f"Latest training workflow {runs[0]['dag_run_id']}: {runs[0]['state']}."
+                    )
+                else:
+                    unknown.append("No recent training DAG runs were returned.")
+            elif source == "airflow.tasks":
+                for task in e.data.get("task_instances", []):
+                    facts.append(f"Airflow task {task['task_id']}: {task.get('state')}.")
+                    if task.get("state") == "failed":
+                        actions.append(
+                            f"Investigate failed task {task['task_id']} using its "
+                            "execution logs; do not infer downstream success."
+                        )
             elif source == "dvc.status":
                 facts.append("DVC workspace status: " + json.dumps(e.data))
                 if e.data:

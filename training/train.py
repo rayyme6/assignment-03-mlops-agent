@@ -119,6 +119,7 @@ def evaluate(out="artifacts", data="data/iris.csv", threshold=0.9):
 def quality_gate(out="artifacts", threshold=0.9):
     result = json.loads(Path(out, "metrics.json").read_text())
     if result["metrics"]["f1"] < threshold:
+        Path(out, "approved.json").unlink(missing_ok=True)
         raise ValueError(f"Quality gate failed: F1 below {threshold}; promotion blocked")
     Path(out, "approved.json").write_text(json.dumps(result, indent=2))
     return result

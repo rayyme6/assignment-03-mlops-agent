@@ -92,12 +92,28 @@ def main():
                 stderr=subprocess.STDOUT,
                 timeout=180,
             )
+        candidates = []
         for c in [0.1, 2.0]:
-            subprocess.run(
-                [sys.executable, "-m", "training.train", "all", "--c", str(c)],
-                check=True,
-                timeout=120,
+            for stage in ["preprocess", "train", "evaluate"]:
+                subprocess.run(
+                    [sys.executable, "-m", "training.train", stage, "--c", str(c)],
+                    check=True,
+                    timeout=120,
+                )
+            gate = subprocess.run(
+                [sys.executable, "-m", "training.train", "gate"],
+                capture_output=True,
+                text=True,
+                timeout=30,
             )
+            candidates.append(
+                {
+                    "C": c,
+                    "gate_exit_code": gate.returncode,
+                    "evaluation": json.loads(Path("artifacts/metrics.json").read_text()),
+                }
+            )
+        save("candidate-evaluations.json", candidates)
         print("Three actual MLflow training runs completed", flush=True)
         agent = Agent()
         save(
