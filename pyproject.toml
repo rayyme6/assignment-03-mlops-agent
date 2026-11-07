@@ -19,6 +19,7 @@ mlops-agent = "agent.main:main"
 include = ["agent*", "api*", "training*"]
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+pythonpath = ["."]
 [tool.ruff]
 line-length = 100
 [tool.ruff.lint]

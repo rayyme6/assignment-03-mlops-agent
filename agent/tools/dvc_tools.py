@@ -29,7 +29,7 @@ class DVCTools:
             files = self._run("git", "ls-files", "*.dvc").splitlines()
             return {"datasets": files}
         if a.operation == "status":
-            return json.loads(self._run("dvc", "status", "--json"))
+            return json.loads(self._run("dvc", "status", "data/iris.csv.dvc", "--json"))
         ref = self._ref(a.reference)
         if a.operation == "diff":
             return json.loads(self._run("dvc", "diff", ref, self._ref(a.other_reference), "--json"))

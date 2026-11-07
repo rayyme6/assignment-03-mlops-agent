@@ -15,7 +15,8 @@ for the Kubernetes demonstration. Commands below run from the repository root.
 ```bash
 python3.12 -m venv .venv
 source .venv/bin/activate
-pip install -e '.[dev]'
+pip install -r requirements.lock
+pip install --no-deps -e .
 cp .env.example .env
 set -a; source .env; set +a
 pytest -q
@@ -23,7 +24,7 @@ ruff check .
 ruff format --check .
 ```
 
-Direct dependencies are pinned. `pathspec==0.12.1` and `sqlalchemy==2.0.44` prevent
+Dependencies are pinned in `requirements.lock`, generated from `pyproject.toml`. `pathspec==0.12.1` and `sqlalchemy==2.0.44` prevent
 compatibility errors found during real DVC/MLflow execution. Airflow uses a separate
 environment with its official constraints. Never commit `.env` or credentials.
 
@@ -131,17 +132,16 @@ curl -X POST localhost:8000/predict -H 'Content-Type: application/json' \
   -d '{"features":[5.1,3.5,1.4,0.2]}'
 ```
 
-Before deployment, confirm `artifacts/approved.json` and `artifacts/model.joblib`
-come from the same training run. Set `MODEL_RUN_ID` and `mlops/run-id` in the
-ConfigMap/Deployment to that run's recorded ID (the checked-in values are explicit
-placeholders), and use a new image tag for each model version.
+Render deployment manifests from the approved artifact. The renderer verifies the model SHA-256,
+quality gate and run ID, then replaces the sample placeholders in both the ConfigMap
+and Deployment. Use a new image tag for each model version.
 
 ```bash
 kind create cluster --name mlops-assignment
 docker build -t iris-api:local-v1 .
 kind load docker-image iris-api:local-v1 --name mlops-assignment
-kubectl apply -f kubernetes/namespace.yaml
-kubectl apply -f kubernetes/
+python scripts/render_deployment.py --image iris-api:local-v1 > artifacts/deploy.yaml
+kubectl apply -f artifacts/deploy.yaml
 kubectl -n mlops-demo rollout status deployment/iris-api --timeout=120s
 kubectl -n mlops-demo get pods,deployments,services
 kubectl -n mlops-demo port-forward service/iris-api 8000:80

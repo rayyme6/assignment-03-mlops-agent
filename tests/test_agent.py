@@ -287,3 +287,14 @@ def test_unhealthy_pod_diagnosis_uses_returned_logs(toolset):
     assert any(
         e.operation == "logs" and e.data["logs"] == "Model file not found" for e in answer.evidence
     )
+
+
+def test_deployment_renderer_rejects_mismatched_model(tmp_path):
+    from scripts.render_deployment import render
+
+    (tmp_path / "model.joblib").write_bytes(b"unapproved model")
+    (tmp_path / "approved.json").write_text(
+        json.dumps({"model_sha256": "different", "tags": {"quality_gate": "passed"}})
+    )
+    with pytest.raises(ValueError, match="does not match"):
+        render(tmp_path, "iris-api:test")

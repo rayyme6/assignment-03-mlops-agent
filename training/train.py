@@ -75,7 +75,22 @@ def provenance(data="data/iris.csv"):
     actual = hashlib.md5(Path(data).read_bytes()).hexdigest()
     if meta != committed or actual != meta["outs"][0]["md5"]:
         raise ValueError("Dataset differs from committed DVC metadata; dvc add and commit first")
-    dirty = subprocess.check_output(["git", "diff", "--name-only", "HEAD"], text=True).strip()
+    dirty = subprocess.check_output(
+        [
+            "git",
+            "diff",
+            "--name-only",
+            "HEAD",
+            "--",
+            "agent",
+            "api",
+            "training",
+            "dags",
+            "pyproject.toml",
+            "dvc.yaml",
+        ],
+        text=True,
+    ).strip()
     return {
         "dataset.git_commit": commit,
         "dataset.dvc_md5": actual,
@@ -110,7 +125,12 @@ def evaluate(out="artifacts", data="data/iris.csv", threshold=0.9):
         mlflow.log_metrics(metrics)
         mlflow.set_tags(tags)
         mlflow.log_artifact(str(Path(out) / "model.joblib"), artifact_path="model")
-        result = {"run_id": run.info.run_id, "metrics": metrics, "tags": tags}
+        result = {
+            "run_id": run.info.run_id,
+            "metrics": metrics,
+            "tags": tags,
+            "model_sha256": hashlib.sha256(Path(out, "model.joblib").read_bytes()).hexdigest(),
+        }
         Path(out, "metrics.json").write_text(json.dumps(result, indent=2))
         mlflow.log_artifact(str(Path(out) / "metrics.json"))
     return result
