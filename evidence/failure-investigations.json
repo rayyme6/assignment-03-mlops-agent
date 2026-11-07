@@ -1,0 +1,13 @@
+[
+  {
+    "scenario": "missing dataset value",
+    "observed_error": "Dataset has insufficient rows, nulls or non-finite values",
+    "resolution": "Regenerate clean data; keep invalid data out of training."
+  },
+  {
+    "scenario": "F1 below quality threshold",
+    "observed_error": "Quality gate failed: F1 below 0.9; promotion blocked",
+    "approved_file_exists": false,
+    "resolution": "Reject promotion and investigate the evaluation errors."
+  }
+]

@@ -1,18 +1,27 @@
-'data/iris.csv.dvc' didn't change, skipping
+Verifying data sources in stage: 'data/iris.csv.dvc'
+
 Running stage 'preprocess':
 > python -m training.train preprocess
 INFO:__main__:Validated 150 rows
-Generating lock file 'dvc.lock'
-Updating lock file 'dvc.lock'
 
 Running stage 'train':
 > python -m training.train train
-Updating lock file 'dvc.lock'
 
 Running stage 'evaluate':
 > python -m training.train evaluate
-WARNING:urllib3.connectionpool:Retrying (Retry(total=6, connect=6, read=7, redirect=7, status=7)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0x7fc43af718b0>: Failed to establish a new connection: [Errno 111] Connection refused')': /api/2.0/mlflow/experiments/get-by-name?experiment_name=iris-training
-WARNING:urllib3.connectionpool:Retrying (Retry(total=5, connect=5, read=7, redirect=7, status=7)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0x7fc43af517f0>: Failed to establish a new connection: [Errno 111] Connection refused')': /api/2.0/mlflow/experiments/get-by-name?experiment_name=iris-training
-WARNING:urllib3.connectionpool:Retrying (Retry(total=4, connect=4, read=7, redirect=7, status=7)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0x7fc43af88560>: Failed to establish a new connection: [Errno 111] Connection refused')': /api/2.0/mlflow/experiments/get-by-name?experiment_name=iris-training
-WARNING:urllib3.connectionpool:Retrying (Retry(total=3, connect=3, read=7, redirect=7, status=7)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0x7fc43af88770>: Failed to establish a new connection: [Errno 111] Connection refused')': /api/2.0/mlflow/experiments/get-by-name?experiment_name=iris-training
-WARNING:urllib3.connectionpool:Retrying (Retry(total=2, connect=2, read=7, redirect=7, status=7)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0x7fc43af888f0>: Failed to establish a new connection: [Errno 111] Connection refused')': /api/2.0/mlflow/experiments/get-by-name?experiment_name=iris-training
+🏃 View run magnificent-sow-246 at: http://127.0.0.1:5000/#/experiments/1/runs/653f1504de7e4778b658178ac0b170ea
+🧪 View experiment at: http://127.0.0.1:5000/#/experiments/1
+Updating lock file 'dvc.lock'
+
+Running stage 'gate':
+> python -m training.train gate
+Updating lock file 'dvc.lock'
+
+To track the changes with git, run:
+
+	git add data/iris.csv.dvc dvc.lock
+
+To enable auto staging, run:
+
+	dvc config core.autostage true
+Use `dvc push` to send your updates to remote storage.

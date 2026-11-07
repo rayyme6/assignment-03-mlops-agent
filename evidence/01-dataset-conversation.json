@@ -1,0 +1,78 @@
+{
+  "request_id": "50e32009-2e87-44ae-a7b2-93591f1436cc",
+  "facts": [
+    "dvc.datasets returned evidence (see structured record).",
+    "Verified committed dataset: {\"git_commit\": \"96a89b5e9284d5876a7b6cfa3004881346962c89\", \"dataset\": \"data/iris.csv\", \"dvc\": {\"outs\": [{\"md5\": \"4224576f0267bf88902f87f0f6200967\", \"size\": 2757, \"hash\": \"md5\", \"path\": \"iris.csv\"}]}}",
+    "DVC workspace status: {}",
+    "dvc.reproduce returned evidence (see structured record)."
+  ],
+  "uncertainties": [
+    "No freshness policy or measured production degradation was supplied; retraining necessity cannot be established from metric rank alone."
+  ],
+  "recommendations": [
+    "No retraining is initiated by model assessment. Review quality, provenance and deployment evidence before authorizing a training run."
+  ],
+  "evidence": [
+    {
+      "request_id": "50e32009-2e87-44ae-a7b2-93591f1436cc",
+      "tool": "dvc",
+      "operation": "datasets",
+      "status": "ok",
+      "data": {
+        "datasets": [
+          "data/iris.csv.dvc"
+        ]
+      },
+      "error": null,
+      "duration_ms": 1.68
+    },
+    {
+      "request_id": "50e32009-2e87-44ae-a7b2-93591f1436cc",
+      "tool": "dvc",
+      "operation": "version",
+      "status": "ok",
+      "data": {
+        "git_commit": "96a89b5e9284d5876a7b6cfa3004881346962c89",
+        "dataset": "data/iris.csv",
+        "dvc": {
+          "outs": [
+            {
+              "md5": "4224576f0267bf88902f87f0f6200967",
+              "size": 2757,
+              "hash": "md5",
+              "path": "iris.csv"
+            }
+          ]
+        }
+      },
+      "error": null,
+      "duration_ms": 4.07
+    },
+    {
+      "request_id": "50e32009-2e87-44ae-a7b2-93591f1436cc",
+      "tool": "dvc",
+      "operation": "status",
+      "status": "ok",
+      "data": {},
+      "error": null,
+      "duration_ms": 248.88
+    },
+    {
+      "request_id": "50e32009-2e87-44ae-a7b2-93591f1436cc",
+      "tool": "dvc",
+      "operation": "reproduce",
+      "status": "ok",
+      "data": {
+        "git_commit": "96a89b5e9284d5876a7b6cfa3004881346962c89",
+        "commands": [
+          "git worktree add --detach ../dataset-reproduction 96a89b5e9284d5876a7b6cfa3004881346962c89",
+          "cd ../dataset-reproduction",
+          "dvc pull data/iris.csv.dvc"
+        ],
+        "prerequisite": "Configure access to the same DVC remote before dvc pull."
+      },
+      "error": null,
+      "duration_ms": 2.31
+    }
+  ]
+}

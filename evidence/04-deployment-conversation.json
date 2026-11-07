@@ -1,0 +1,52 @@
+{
+  "request_id": "dd318c9d-8242-4cf2-9111-17700e705389",
+  "facts": [],
+  "uncertainties": [
+    "kubernetes.deployments: ConfigException: tool did not provide usable evidence",
+    "kubernetes.pods: ConfigException: tool did not provide usable evidence",
+    "kubernetes.services: ConfigException: tool did not provide usable evidence",
+    "kubernetes.events: ConfigException: tool did not provide usable evidence",
+    "No freshness policy or measured production degradation was supplied; retraining necessity cannot be established from metric rank alone."
+  ],
+  "recommendations": [
+    "No retraining is initiated by model assessment. Review quality, provenance and deployment evidence before authorizing a training run."
+  ],
+  "evidence": [
+    {
+      "request_id": "dd318c9d-8242-4cf2-9111-17700e705389",
+      "tool": "kubernetes",
+      "operation": "deployments",
+      "status": "error",
+      "data": null,
+      "error": "ConfigException: tool did not provide usable evidence",
+      "duration_ms": 0.24
+    },
+    {
+      "request_id": "dd318c9d-8242-4cf2-9111-17700e705389",
+      "tool": "kubernetes",
+      "operation": "pods",
+      "status": "error",
+      "data": null,
+      "error": "ConfigException: tool did not provide usable evidence",
+      "duration_ms": 0.06
+    },
+    {
+      "request_id": "dd318c9d-8242-4cf2-9111-17700e705389",
+      "tool": "kubernetes",
+      "operation": "services",
+      "status": "error",
+      "data": null,
+      "error": "ConfigException: tool did not provide usable evidence",
+      "duration_ms": 0.04
+    },
+    {
+      "request_id": "dd318c9d-8242-4cf2-9111-17700e705389",
+      "tool": "kubernetes",
+      "operation": "events",
+      "status": "error",
+      "data": null,
+      "error": "ConfigException: tool did not provide usable evidence",
+      "duration_ms": 0.03
+    }
+  ]
+}

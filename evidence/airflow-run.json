@@ -1,0 +1,33 @@
+{
+  "dag_run_id": "agent__2122c502-9af6-4827-a2d1-536588684477",
+  "dag_id": "iris_training",
+  "logical_date": "2026-11-07T14:53:18.709552Z",
+  "queued_at": "2026-11-07T14:53:18.715304Z",
+  "start_date": "2026-11-07T14:53:19.811550Z",
+  "end_date": "2026-11-07T14:53:27.658838Z",
+  "duration": 7.847288,
+  "data_interval_start": "2026-11-07T14:53:18.709552Z",
+  "data_interval_end": "2026-11-07T14:53:18.709552Z",
+  "run_after": "2026-11-07T14:53:18.709552Z",
+  "last_scheduling_decision": "2026-11-07T14:53:27.657733Z",
+  "run_type": "manual",
+  "state": "success",
+  "triggered_by": "rest_api",
+  "triggering_user_name": "admin",
+  "conf": {},
+  "note": null,
+  "dag_versions": [
+    {
+      "id": "01a1b67d-a66c-7b9b-8287-9a5adf255cc1",
+      "version_number": 1,
+      "dag_id": "iris_training",
+      "bundle_name": "dags-folder",
+      "bundle_version": null,
+      "created_at": "2026-11-07T14:50:50.349024Z",
+      "dag_display_name": "iris_training",
+      "bundle_url": null
+    }
+  ],
+  "bundle_version": null,
+  "dag_display_name": "iris_training"
+}
