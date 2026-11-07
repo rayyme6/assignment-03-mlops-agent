@@ -1,4 +1,5 @@
 """Validated, bounded tool contracts. LLM outputs never grant authority."""
+
 from typing import Any, Literal
 
 from pydantic import BaseModel, ConfigDict, Field

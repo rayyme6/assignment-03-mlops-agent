@@ -15,3 +15,5 @@ mlflow.db*
 .local-dvc-remote/
 *.pem
 kubeconfig*
+
+pytest-of-*/

@@ -1,4 +1,5 @@
 """Reproducible stages shared by DVC, Airflow and the local integration test."""
+
 import argparse
 import hashlib
 import json
@@ -49,7 +50,8 @@ def preprocess(data="data/iris.csv", out="artifacts"):
     validate(data)
     frame = pd.read_csv(data)
     x_train, x_test, y_train, y_test = train_test_split(
-        frame[FEATURES], frame.target, test_size=0.25, stratify=frame.target, random_state=42)
+        frame[FEATURES], frame.target, test_size=0.25, stratify=frame.target, random_state=42
+    )
     Path(out).mkdir(parents=True, exist_ok=True)
     joblib.dump((x_train, x_test, y_train, y_test), Path(out) / "split.joblib")
     return str(out)
@@ -67,29 +69,44 @@ def train(out="artifacts", c=1.0):
 def provenance(data="data/iris.csv"):
     commit = subprocess.check_output(["git", "rev-parse", "HEAD"], text=True).strip()
     meta = yaml.safe_load(Path(data + ".dvc").read_text())
-    committed = yaml.safe_load(subprocess.check_output(["git", "show", f"HEAD:{data}.dvc"], text=True))
+    committed = yaml.safe_load(
+        subprocess.check_output(["git", "show", f"HEAD:{data}.dvc"], text=True)
+    )
     actual = hashlib.md5(Path(data).read_bytes()).hexdigest()
     if meta != committed or actual != meta["outs"][0]["md5"]:
         raise ValueError("Dataset differs from committed DVC metadata; dvc add and commit first")
     dirty = subprocess.check_output(["git", "diff", "--name-only", "HEAD"], text=True).strip()
-    return {"dataset.git_commit": commit, "dataset.dvc_md5": actual,
-            "dataset.path": data, "code.dirty": str(bool(dirty)).lower()}
+    return {
+        "dataset.git_commit": commit,
+        "dataset.dvc_md5": actual,
+        "dataset.path": data,
+        "code.dirty": str(bool(dirty)).lower(),
+    }
 
 
 def evaluate(out="artifacts", data="data/iris.csv", threshold=0.9):
     import mlflow
+
     mlflow.set_tracking_uri(os.getenv("MLFLOW_TRACKING_URI", "http://localhost:5000"))
     mlflow.set_experiment(os.getenv("MLFLOW_EXPERIMENT", "iris-training"))
     _, x_test, _, y_test = joblib.load(Path(out) / "split.joblib")
     model = joblib.load(Path(out) / "model.joblib")
     predicted = model.predict(x_test)
-    metrics = {"f1": float(f1_score(y_test, predicted, average="macro")),
-               "accuracy": float(accuracy_score(y_test, predicted))}
+    metrics = {
+        "f1": float(f1_score(y_test, predicted, average="macro")),
+        "accuracy": float(accuracy_score(y_test, predicted)),
+    }
     tags = provenance(data)
     tags["quality_gate"] = "passed" if metrics["f1"] >= threshold else "failed"
     with mlflow.start_run() as run:
-        mlflow.log_params({"C": model[-1].C, "random_state": 42, "test_size": 0.25,
-                           "quality_threshold": threshold})
+        mlflow.log_params(
+            {
+                "C": model[-1].C,
+                "random_state": 42,
+                "test_size": 0.25,
+                "quality_threshold": threshold,
+            }
+        )
         mlflow.log_metrics(metrics)
         mlflow.set_tags(tags)
         mlflow.log_artifact(str(Path(out) / "model.joblib"), artifact_path="model")
@@ -109,7 +126,9 @@ def quality_gate(out="artifacts", threshold=0.9):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("stage", choices=["generate", "validate", "preprocess", "train", "evaluate", "gate", "all"])
+    parser.add_argument(
+        "stage", choices=["generate", "validate", "preprocess", "train", "evaluate", "gate", "all"]
+    )
     parser.add_argument("--out", default="artifacts")
     parser.add_argument("--threshold", type=float, default=0.9)
     parser.add_argument("--c", type=float, default=1.0)

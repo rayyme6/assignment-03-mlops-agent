@@ -8,7 +8,7 @@ version = "0.1.0"
 requires-python = ">=3.11,<3.13"
 dependencies = [
   "fastapi==0.121.1", "uvicorn==0.38.0", "pydantic==2.12.4",
-  "httpx==0.28.1", "PyYAML==6.0.3", "mlflow==3.5.1", "dvc==3.63.0",
+  "httpx==0.28.1", "PyYAML==6.0.3", "mlflow==3.5.1", "dvc==3.63.0", "pathspec==0.12.1",
   "kubernetes==34.1.0", "openai==2.7.1", "scikit-learn==1.7.2", "pandas==2.3.3",
 ]
 [project.optional-dependencies]

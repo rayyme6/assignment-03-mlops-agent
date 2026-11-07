@@ -8,8 +8,12 @@ def main():
     parser = argparse.ArgumentParser(description="Evidence-first MLOps agent")
     parser.add_argument("question")
     parser.add_argument("--llm", action="store_true", help="Use OpenAI structured planning")
-    parser.add_argument("--approve", action="append", default=[],
-                        help="Exact action:target, e.g. airflow.trigger:iris_training")
+    parser.add_argument(
+        "--approve",
+        action="append",
+        default=[],
+        help="Exact action:target, e.g. airflow.trigger:iris_training",
+    )
     args = parser.parse_args()
     # Approval originates from the human CLI, never from generated tool arguments.
     if args.approve:
