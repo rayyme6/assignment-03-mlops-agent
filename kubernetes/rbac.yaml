@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata: {name: mlops-agent, namespace: mlops-demo}
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata: {name: mlops-agent-reader, namespace: mlops-demo}
+rules:
+  - apiGroups: [""]
+    resources: [pods, pods/log, services, events]
+    verbs: [get, list]
+  - apiGroups: [apps]
+    resources: [deployments]
+    verbs: [get, list]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata: {name: mlops-agent-reader, namespace: mlops-demo}
+subjects: [{kind: ServiceAccount, name: mlops-agent, namespace: mlops-demo}]
+roleRef: {kind: Role, name: mlops-agent-reader, apiGroup: rbac.authorization.k8s.io}

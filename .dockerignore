@@ -1,0 +1,8 @@
+.git
+.env
+.venv
+mlruns
+.airflow
+.local-dvc-remote
+.dvc/cache
+__pycache__

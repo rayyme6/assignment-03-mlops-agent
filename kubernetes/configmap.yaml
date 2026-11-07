@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: iris-config
+  namespace: mlops-demo
+data:
+  MODEL_PATH: /app/artifacts/model.joblib
+  MODEL_VERSION: local-v1
+  MODEL_RUN_ID: replace-with-approved-run-id

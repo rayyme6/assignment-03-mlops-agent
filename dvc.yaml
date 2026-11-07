@@ -1,0 +1,19 @@
+stages:
+  preprocess:
+    cmd: python -m training.train preprocess
+    deps: [data/iris.csv, training/train.py]
+    outs: [artifacts/split.joblib]
+  train:
+    cmd: python -m training.train train
+    deps: [artifacts/split.joblib, training/train.py]
+    outs: [artifacts/model.joblib]
+  evaluate:
+    cmd: python -m training.train evaluate
+    deps: [artifacts/model.joblib, artifacts/split.joblib, training/train.py]
+    metrics:
+      - artifacts/metrics.json:
+          cache: false
+  gate:
+    cmd: python -m training.train gate
+    deps: [artifacts/metrics.json, training/train.py]
+    outs: [artifacts/approved.json]
