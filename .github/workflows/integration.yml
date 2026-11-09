@@ -1,0 +1,66 @@
+name: Live integration evidence
+on:
+  workflow_dispatch:
+    inputs:
+      confirm_demo:
+        description: 'Authorize training and deployment to the disposable mlops-assignment kind cluster'
+        required: true
+        default: false
+        type: boolean
+      run_llm:
+        description: 'Also call OpenAI using the OPENAI_API_KEY repository secret (API usage applies)'
+        required: true
+        default: false
+        type: boolean
+permissions:
+  contents: read
+jobs:
+  integration:
+    if: ${{ inputs.confirm_demo }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+          cache-dependency-path: requirements.lock
+      - name: Install isolated environments
+        run: |
+          python -m venv .venv
+          .venv/bin/pip install -r requirements.lock
+          .venv/bin/pip install --no-deps -e .
+          python -m venv .airflow-venv
+          .airflow-venv/bin/pip install apache-airflow==3.1.1 -c https://raw.githubusercontent.com/apache/airflow/constraints-3.1.1/constraints-3.12.txt
+      - name: Restore dataset and development references
+        run: |
+          git fetch history/development.bundle main:development-history
+          .venv/bin/python -m training.train generate
+          .venv/bin/python -c 'from training.train import provenance; print(provenance())'
+          .venv/bin/dvc add data/iris.csv
+          .venv/bin/dvc push data/iris.csv.dvc
+      - name: Create disposable Kubernetes cluster
+        id: cluster
+        uses: helm/kind-action@v1.12.0
+        with:
+          cluster_name: mlops-assignment
+      - name: Run real tools and capture evidence
+        env:
+          RUN_KUBERNETES_DEMO: '1'
+          RUN_LLM_DEMO: ${{ inputs.run_llm && '1' || '0' }}
+          OPENAI_API_KEY: ${{ inputs.run_llm && secrets.OPENAI_API_KEY || '' }}
+        run: |
+          export AIRFLOW_PYTHON="$PWD/.airflow-venv/bin/python"
+          .venv/bin/python scripts/run_local_evidence.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: live-integration-evidence
+          path: evidence/
+          retention-days: 14
+      - name: Remove disposable cluster
+        if: always() && steps.cluster.outcome == 'success'
+        run: kind delete cluster --name mlops-assignment

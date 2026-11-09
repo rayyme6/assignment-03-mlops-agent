@@ -6,3 +6,5 @@ mlruns
 .local-dvc-remote
 .dvc/cache
 __pycache__
+
+.airflow-venv/

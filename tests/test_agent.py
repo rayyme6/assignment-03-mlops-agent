@@ -298,3 +298,27 @@ def test_deployment_renderer_rejects_mismatched_model(tmp_path):
     )
     with pytest.raises(ValueError, match="does not match"):
         render(tmp_path, "iris-api:test")
+
+
+def test_kubernetes_demo_requires_human_confirmation(monkeypatch):
+    from scripts.kubernetes_demo import deploy_demo
+
+    runner = Mock()
+    monkeypatch.setattr("scripts.kubernetes_demo.subprocess.check_output", runner)
+    with pytest.raises(PermissionError, match="confirmation"):
+        deploy_demo()
+    runner.assert_not_called()
+
+
+def test_kubernetes_demo_refuses_other_context(monkeypatch):
+    from scripts.kubernetes_demo import deploy_demo
+
+    monkeypatch.setattr(
+        "scripts.kubernetes_demo.subprocess.check_output",
+        lambda *args, **kwargs: "production-cluster",
+    )
+    runner = Mock()
+    monkeypatch.setattr("scripts.kubernetes_demo.subprocess.run", runner)
+    with pytest.raises(PermissionError, match="expected context"):
+        deploy_demo(confirmed=True)
+    runner.assert_not_called()

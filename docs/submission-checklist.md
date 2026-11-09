@@ -7,7 +7,9 @@
 - [x] Add meaningful pytest tests and pull-request CI configuration.
 - [x] Preserve actual milestone commits locally.
 - [x] Create GitHub repository and publish milestone snapshots plus original-history bundle.
-- [ ] Verify green GitHub Actions run.
+- [ ] Resolve the hosted-runner account restriction, rerun CI and verify a green result.
+- [x] Add a confirmed, manually triggered live-integration workflow with an ephemeral cluster.
+- [ ] Run that workflow successfully after the hosted-runner restriction is resolved.
 - [ ] Run live LLM planner with privately configured API key.
 - [ ] Deploy on Kubernetes and export successful rollout plus diagnosis evidence.
 - [ ] Replace run-ID placeholders with the actual deployed model run ID.

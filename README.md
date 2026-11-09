@@ -207,3 +207,26 @@ The connected API publishes each development snapshot as a milestone commit;
 See [history notes](history/README.md) for restoring original provenance references.
 
 The remaining live checks are listed in `docs/submission-checklist.md`.
+
+
+## 9. Automated live integration demonstration
+
+Once hosted Actions jobs can start, open **Actions → Live integration evidence →
+Run workflow**. Select `confirm_demo` to authorize training and deployment to a
+new disposable kind cluster named `mlops-assignment`, namespace `mlops-demo`.
+The workflow runs real DVC, MLflow, Airflow and Kubernetes operations; builds the
+inference image; verifies rollout, model run ID and prediction; and uploads JSON
+evidence as the `live-integration-evidence` artifact. It deletes the test cluster
+when finished. Ordinary pull-request CI continues to mock external services.
+
+For the optional live LLM check, configure `OPENAI_API_KEY` in repository
+**Settings → Secrets and variables → Actions**, then select `run_llm`. This calls
+the configured model and incurs API usage. Never paste the key into code or chat.
+
+The workflow has been authored and its authorization guards tested locally;
+**the hosted integration workflow has not yet executed**. The first hosted CI
+attempt was prevented from starting by an account-level restriction. A green
+local test suite is not evidence of a successful hosted run or Kubernetes rollout.
+
+After a successful integration run, download its artifact, review the exported
+records and update the report with the actual results before submission.

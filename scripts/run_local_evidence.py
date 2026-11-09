@@ -115,6 +115,10 @@ def main():
             )
         save("candidate-evaluations.json", candidates)
         print("Three actual MLflow training runs completed", flush=True)
+        if os.getenv("RUN_KUBERNETES_DEMO") == "1":
+            from scripts.kubernetes_demo import deploy_demo
+
+            save("kubernetes-smoke.json", deploy_demo(confirmed=True))
         agent = Agent()
         save(
             "01-dataset-conversation.json",
@@ -220,6 +224,8 @@ def main():
             save("airflow-run.json", r.json())
             save("03-pipeline-conversation.json", agent.ask("Report pipeline status").model_dump())
             print("Airflow run state: " + r.json()["state"], flush=True)
+            if r.json()["state"] != "success":
+                raise RuntimeError("Airflow training did not finish successfully")
         save("02-model-conversation.json", agent.ask("Compare best recent model").model_dump())
         save(
             "04-deployment-conversation.json",
@@ -232,6 +238,18 @@ def main():
                 "and explain whether retraining is necessary"
             ).model_dump(),
         )
+        if os.getenv("RUN_KUBERNETES_DEMO") == "1":
+            assessment = agent.ask("Find the best recent model and check deployment status")
+            failures = [e for e in assessment.evidence if e.status != "ok"]
+            if failures:
+                raise RuntimeError("Integration assessment returned unavailable tool evidence")
+        if os.getenv("RUN_LLM_DEMO") == "1":
+            if not os.getenv("OPENAI_API_KEY"):
+                raise RuntimeError("Configure the OPENAI_API_KEY repository secret first")
+            llm = agent.ask("Find the best recent model and check deployment status", use_llm=True)
+            save("06-live-llm-conversation.json", llm.model_dump())
+            if not llm.evidence or any(e.status != "ok" for e in llm.evidence):
+                raise RuntimeError("Live LLM assessment did not return successful tool evidence")
         print("Evidence exported; unavailable systems remain explicitly unknown", flush=True)
     finally:
         import signal

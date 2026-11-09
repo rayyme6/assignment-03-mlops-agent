@@ -6,16 +6,21 @@ Assignment 03, Fall 2026. Submission deadline: **15 November 2026**.
 
 The source implements all four integrations, structured LLM planning, an offline
 router, authorization, training, inference, deployment manifests and CI. **The
-submission is not fully verified yet:** GitHub publication, a live Kubernetes
-rollout, and a live LLM request still require external access. No cluster result,
+submission is not fully verified yet:** A live Kubernetes rollout and a live LLM request still require external access;
+the GitHub repository has now been published. Hosted CI was triggered but the
+runner did not start because of an account-level restriction. No cluster result,
 remote CI success or LLM response has been fabricated.
 
-Verified locally on 7 November 2026: **26 pytest cases passed**, Ruff lint and
-format checks passed, DVC data recovery matched the recorded hash, real MLflow
+Verified locally on 9 November 2026: **28 pytest cases passed** in the isolated
+environment, including the new Kubernetes demonstration authorization guards.
+Ruff lint and format checks passed. On 7 November, DVC data recovery matched the recorded hash, real MLflow
 training runs were recorded, real authenticated Airflow API calls triggered a DAG,
 and all five tasks completed successfully. FastAPI served a real model prediction.
 The deployment manifest renderer was executed successfully; Docker image build and
-Kubernetes server-side validation remain unexecuted.
+Kubernetes server-side validation remain unexecuted. A manually triggered
+[Live integration evidence workflow](../.github/workflows/integration.yml) now
+automates the remaining infrastructure demonstration once hosted jobs can start.
+It has not executed; its presence is not deployment evidence.
 
 ## Architecture and rationale
 
@@ -111,7 +116,9 @@ failure without hallucination, malformed input, shell/option injection, metric
 ranking, namespace enforcement, exact-target approval, secret redaction, actual
 inference, stale gate approvals and model/artifact mismatch. The LLM test proves
 a generated write plan cannot grant itself permission. Results:
-[pytest-results.xml](../evidence/pytest-results.xml).
+[pytest-results.xml](../evidence/pytest-results.xml) contains the original 26-test run;
+[local-verification-2026-11-09.txt](../evidence/local-verification-2026-11-09.txt)
+records the subsequent 28-test verification.
 
 The default Kubernetes role is read-only. Deployment restart still needs exact
 human approval and separately granted narrow cluster permissions. Secrets stay in
@@ -132,9 +139,12 @@ from the deliverable. Only trusted pipeline-generated joblib files may be loaded
 - What failed unexpectedly during setup? DVC was incompatible with a newer
   pathspec API, and MLflow with SQLAlchemy 2.1. Verified compatibility pins were
   added, followed by successful real execution.
-- Remaining scope: live Kubernetes, Docker build, live OpenAI plan, remote CI and
-  GitHub publication. The GitHub connector could identify the account but exposed
-  no repository-creation operation; CLI/browser authentication was unavailable.
+- Remaining scope: live Kubernetes, Docker build, live OpenAI plan and a successful
+  remote CI run. The user created the repository, and the connector published the
+  milestone snapshots plus an original-history Git bundle.
+  [Initial CI run](https://github.com/rayyme6/assignment-03-mlops-agent/actions/runs/42385050220)
+  did not start its job because of an account-level restriction. The restriction
+  must be resolved by the account owner before rerunning CI.
 - The demo uses SQLite and Airflow standalone, limited response windows, basic
   redaction and a fixed dataset. Production needs TLS/auth, durable shared storage,
   signed artifacts, drift/freshness policies, pagination and stronger user identity.
@@ -147,4 +157,6 @@ from the deliverable. Only trusted pipeline-generated joblib files may be loaded
 - [Kubernetes Deployments](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/)
 
 Use [submission-checklist.md](submission-checklist.md) to complete the remaining
-live verification and publish the preserved milestone history before the deadline.
+live verification before the deadline. The original milestone history is preserved
+in [development.bundle](../history/development.bundle); restore it using the
+[history instructions](../history/README.md) before reproducing old evidence.

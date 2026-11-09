@@ -17,3 +17,5 @@ mlflow.db*
 kubeconfig*
 
 pytest-of-*/
+
+.airflow-venv/

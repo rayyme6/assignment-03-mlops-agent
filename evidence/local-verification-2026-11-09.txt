@@ -1,0 +1,10 @@
+All checks passed!
+18 files already formatted
+............................                                             [100%]
+=============================== warnings summary ===============================
+../.ci-venv/lib/python3.12/site-packages/starlette/testclient.py:51
+  /workspace/scratch/0095e8a6b0df/.ci-venv/lib/python3.12/site-packages/starlette/testclient.py:51: DeprecationWarning: The anyio.abc.BlockingPortal alias is deprecated, use anyio.from_thread.BlockingPortal instead.
+    _PortalFactoryType = Callable[[], AbstractContextManager[anyio.abc.BlockingPortal]]
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+28 passed, 1 warning in 2.21s
