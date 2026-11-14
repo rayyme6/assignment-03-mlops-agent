@@ -125,6 +125,6 @@ Commits are made when each milestone is verified. Commit timestamps reflect when
 
 ## GitHub publication
 
-- Pushed the completed history to `assignment03-completion` and opened draft PR#1 against the preserved main branch.
+- Pushed the completed history to `assignment03-completion` and opened draft PR #1 against the preserved main branch.
 - Checked hosted CI rather than inferring success from local checks. Both jobs stopped before any steps because GitHub reports an account billing lock. Recorded the provider message and run link in `evidence/hosted-ci.json`.
 - All authorized implementation, local checks and real-service demonstrations are complete. Hosted execution requires the repository owner to resolve that external account restriction.
