@@ -1,8 +1,0 @@
-{
-  "git_commit": "d034bbf29623dd7c8ff9bb69c14e3685260200f3",
-  "method": "fresh detached worktree and dvc pull from configured remote",
-  "expected_md5": "4224576f0267bf88902f87f0f6200967",
-  "actual_md5": "4224576f0267bf88902f87f0f6200967",
-  "match": true,
-  "rows": 150
-}

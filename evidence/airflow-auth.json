@@ -1,0 +1,24 @@
+{
+  "kind": "live-observation",
+  "observed_at": "2026-11-14T11:59:02.321605+00:00",
+  "airflow_container_versions": {
+    "apache-airflow": "3.1.3",
+    "mlflow": "3.2.0",
+    "scikit-learn": "1.7.2"
+  },
+  "auth_checks": {
+    "missing_token": {
+      "http_status": 401
+    },
+    "invalid_token": {
+      "http_status": 403
+    },
+    "valid_token": {
+      "http_status": 200,
+      "dag_ids": [
+        "training_pipeline"
+      ]
+    }
+  },
+  "credentials_exported": false
+}

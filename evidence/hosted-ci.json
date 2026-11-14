@@ -1,0 +1,27 @@
+{
+  "kind": "hosted-ci-observation",
+  "observed_at": "2026-11-14T12:54:00.518907+00:00",
+  "repository": "rayyme6/assignment-03-mlops-agent",
+  "pull_request": "https://github.com/rayyme6/assignment-03-mlops-agent/pull/1",
+  "commit": "469644cd57e0b886193d2d92d1d202251deb4e75",
+  "run_id": 43596880315,
+  "run_url": "https://github.com/rayyme6/assignment-03-mlops-agent/actions/runs/43596880315",
+  "status": "not_started_account_restriction",
+  "provider_message": "The job was not started because your account is locked due to a billing issue.",
+  "jobs": [
+    {
+      "name": "lint-and-test",
+      "job_id": 132453173246,
+      "conclusion": "failure",
+      "steps_started": false
+    },
+    {
+      "name": "airflow-dag",
+      "job_id": 132453173489,
+      "conclusion": "failure",
+      "steps_started": false
+    }
+  ],
+  "local_verification": "153 tests, Ruff lint and formatting passed; see evidence/verification.json",
+  "required_action": "Repository owner must resolve the GitHub account billing lock, then rerun assignment-checks. No passing hosted result is claimed."
+}

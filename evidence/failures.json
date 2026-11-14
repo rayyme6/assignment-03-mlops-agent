@@ -1,0 +1,89 @@
+{
+  "schema_version": 1,
+  "kind": "live-observation",
+  "observed_at": "2026-11-14T09:16:20.720660+00:00",
+  "scope": "Two deliberately injected local failures executed with real validation, quality-gate, and MLflow SDK code; no external deployment state is inferred.",
+  "source_dataset_unchanged": true,
+  "temporary_workspaces_removed": true,
+  "tracking_store_retained": false,
+  "all_expected_failures_observed": true,
+  "investigations": [
+    {
+      "name": "missing_dataset_feature",
+      "injected_change": "One numeric feature in an isolated copy of Iris was replaced with an empty cell.",
+      "expected_exception": "ValueError",
+      "observed_exception": {
+        "type": "ValueError",
+        "message": "Dataset contains missing or non-finite values"
+      },
+      "expected_failure_observed": true,
+      "evidence": {
+        "input_rows": 150,
+        "input_columns": [
+          "sepal length (cm)",
+          "sepal width (cm)",
+          "petal length (cm)",
+          "petal width (cm)",
+          "target"
+        ],
+        "missing_feature_cells_in_first_row": 1,
+        "output_directory_created": false,
+        "downstream_files_exist": {
+          "prepared.joblib": false,
+          "candidate.joblib": false,
+          "model.joblib": false,
+          "metadata.json": false
+        },
+        "downstream_training_blocked": true
+      },
+      "diagnosis": {
+        "root_cause": "A required numeric feature is missing, so finite-value validation rejects the dataset.",
+        "resolution": "Repair the source data, validate it, update its DVC pointer and commit provenance before retraining.",
+        "observed_containment": "No prepared dataset, trained candidate, or approved serving artifact was created."
+      }
+    },
+    {
+      "name": "below_threshold_quality_gate",
+      "injected_change": "F1=0.4 was deliberately recorded in a real isolated MLflow run; the configured gate is 0.85.",
+      "expected_exception": "ValueError",
+      "observed_exception": {
+        "type": "ValueError",
+        "message": "Quality gate failed: F1 0.4000 < 0.8500"
+      },
+      "expected_failure_observed": true,
+      "evidence": {
+        "tracking_backend": "real local MLflow SQLite",
+        "database_created": true,
+        "run_id": "92dbbe9ff01945a59bd32f380b430b40",
+        "run_status": "FINISHED",
+        "recorded_metrics": {
+          "f1_score": 0.4,
+          "min_f1": 0.85
+        },
+        "recorded_tags": {
+          "purpose": "deliberately_injected_failure",
+          "quality_gate": "failed",
+          "metric_source": "injected_for_gate_demonstration",
+          "mlflow.runName": "big-grouse-740"
+        },
+        "recorded_artifacts": [
+          "quality_gate.json"
+        ],
+        "quality_gate_file": {
+          "state": "failed",
+          "min_f1": 0.85,
+          "f1_score": 0.4
+        },
+        "candidate_kind": "unloaded sentinel bytes; injected metric is not a measured model result",
+        "candidate_bytes_unchanged": true,
+        "approved_model_exists": false,
+        "approved_metadata_exists": false
+      },
+      "diagnosis": {
+        "root_cause": "The deliberately supplied F1 score 0.4 is lower than the explicit acceptance threshold 0.85.",
+        "resolution": "Inspect real evaluation and data evidence, then improve/retrain a candidate and rerun the gate. Revise policy only with an explicit justified decision.",
+        "observed_containment": "The MLflow gate tag is failed and no serving model or approved metadata was published."
+      }
+    }
+  ]
+}

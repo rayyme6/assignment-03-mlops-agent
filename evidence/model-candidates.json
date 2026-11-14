@@ -1,0 +1,27 @@
+{
+  "kind": "live-observation",
+  "observed_at": "2026-11-14T12:00:15.972831+00:00",
+  "scope": "Actual MLflow-backed training on the same fixed Iris holdout; results do not establish production generalization.",
+  "runs": [
+    {
+      "n_estimators": 5,
+      "state": "passed",
+      "run_id": "3151fb2312d5466e8caf9ff8ce53d1e5",
+      "metrics": {
+        "accuracy": 0.9333333333333333,
+        "f1_score": 0.9333333333333332
+      },
+      "model_path": "artifacts/candidates/RF5/model.joblib"
+    },
+    {
+      "n_estimators": 50,
+      "state": "passed",
+      "run_id": "dbfcbb1460924b8eb463b901637b0853",
+      "metrics": {
+        "accuracy": 0.9,
+        "f1_score": 0.899749373433584
+      },
+      "model_path": "artifacts/candidates/RF50/model.joblib"
+    }
+  ]
+}

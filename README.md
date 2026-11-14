@@ -1,232 +1,154 @@
-# Assignment 03: MLOps AI Agent
+# Evidence-backed MLOps AI Agent — Assignment 03
 
-A Python agent integrating **DVC, MLflow, Airflow 3 and Kubernetes** with structured
-planning, evidence-based answers and explicit write authorization.
+A Python conversational agent connects DVC dataset provenance, MLflow experiment tracking, the authenticated Airflow 3 API and Kubernetes application health. Every operational statement carries tool evidence; failed calls remain explicit uncertainties. Training and cluster restarts require operator confirmation.
 
-**Due: 15 November 2026.** Commits record actual development milestones. See
-[technical report](docs/technical-report.md) for measured results and remaining
-live verification requirements; do not present unavailable infrastructure as tested.
+The repository includes 153 passing automated tests plus real DVC restoration, MLflow comparisons, successful Airflow execution and Kubernetes readiness/prediction exports.
 
-Repository: https://github.com/rayyme6/assignment-03-mlops-agent
+See [architecture](architecture.md), [technical report](docs/technical_report.md), [engineering defense](docs/defense.md), [evidence exports](evidence/README.md) and the [commit/work log](WORK_LOG.md).
 
-The original evidence refers to development commit IDs. After cloning, run
-`git fetch history/development.bundle main:development-history` to restore those
-objects. See [history notes](history/README.md).
+## Install
 
-## 1. Install
-
-Use Python 3.12, Git and a POSIX shell. Docker, kind and kubectl are needed only
-for the Kubernetes demonstration. Commands below run from the repository root.
+Use Python 3.10–3.12; Python 3.11 is used in CI and containers. Docker/Compose and kind/kubectl are needed for the full infrastructure demo.
 
 ```bash
-python3.12 -m venv .venv
+python3 -m venv .venv
 source .venv/bin/activate
-pip install -r requirements.lock
-pip install --no-deps -e .
+python -m pip install --upgrade pip
+python -m pip install -e '.[dev]'
 cp .env.example .env
-set -a; source .env; set +a
-pytest -q
+```
+
+Set environment variables in your shell or load a trusted local `.env` with `set -a; source .env; set +a`. The application reads the environment; it does not automatically execute `.env`. Keep keys, JWTs and kubeconfigs untracked. Keep tracking URLs credential-free; use `MLFLOW_TRACKING_USERNAME`/`MLFLOW_TRACKING_PASSWORD` or `MLFLOW_TRACKING_TOKEN` environment variables for authenticated MLflow servers.
+
+## Restore the dataset
+
+`data/iris.csv.dvc` records the actual dataset content hash. The existing `localstore` DVC remote is relative to the course workspace. For another machine, configure a remote containing the DVC objects:
+
+```bash
+export DVC_SITE_CACHE_DIR="$PWD/.dvc/tmp/site-cache"
+dvc remote modify --local localstore url /absolute/path/to/your/dvc-remote
+dvc pull data/iris.csv.dvc
+```
+
+For a fresh clone without access to that remote, the public scikit-learn Iris dataset is reproducible byte-for-byte:
+
+```bash
+python scripts/create_dataset.py
+python -c "from agent.tools.dvc_tools import DVCTools; p=DVCTools().dataset_version(); assert p['data_matches_metadata']; print(p)"
+dvc add data/iris.csv
+```
+
+The generator refuses to overwrite an existing file. Commit dataset pointer changes intentionally; never claim an uncommitted dataset is a historical version. For an isolated historical reproduction, use `python -m scripts.collect_evidence --reproduce-data`; it fetches to a temporary directory and verifies the hash.
+
+## Launch MLflow and Airflow
+
+The local demonstration uses SQLite and Airflow standalone. It starts all real Airflow components in one container. A production deployment should use separate components, durable object storage, a proper database, HTTPS and restricted identities.
+
+```bash
+export AIRFLOW_UID=$(id -u)
+export MLFLOW_PORT=5500 AIRFLOW_PORT=58080
+docker compose -p assignment03 up -d --build mlflow airflow
+export MLFLOW_TRACKING_URI=http://127.0.0.1:5500
+export AIRFLOW_BASE_URL=http://127.0.0.1:58080
+```
+
+Airflow's local SimpleAuthManager creates an admin password in its container's Airflow home. Read it locally; never paste it into evidence or commit it. Request a JWT using `POST /auth/token` with the auth manager's username/password JSON, then export the returned `access_token` as `AIRFLOW_TOKEN`. See [Airflow's authentication documentation](https://airflow.apache.org/docs/apache-airflow/3.1.3/security/api.html). The agent uses `/api/v2` with a Bearer JWT. A private `.env` may hold these values.
+
+The MLflow UI is at `http://127.0.0.1:5500`; Airflow is at `http://127.0.0.1:58080`. Override ports if necessary. For a non-Docker Airflow installation, run `bash scripts/bootstrap_airflow.sh`; it creates a separate constrained environment and launches standalone on port 8080. Do not install Airflow into the agent environment: its dependency constraints differ.
+
+## Train and serve
+
+Training validates the dataset, creates a deterministic stratified split, fits a random forest, logs actual metrics/artifacts/provenance to MLflow, then applies the configured F1 gate. Failed validation or evaluation prevents approval. Gate success creates `artifacts/model.joblib` and `artifacts/metadata.json`; deployment remains an operator step.
+
+```bash
+python -m training.train
+# DVC can reproduce the same pipeline and cache its outputs:
+dvc repro
+uvicorn api.main:app --host 127.0.0.1 --port 8000
+```
+
+A local tracking database can be used when the tracking server is unavailable:
+
+```bash
+mkdir -p artifacts
+export MLFLOW_TRACKING_URI="sqlite:///$PWD/artifacts/local-tracking.db"
+python -m training.train
+```
+
+`params.yaml` defines the training parameters and an explicit educational minimum macro F1 of 0.85. The observed RF100 score of 0.89975 correctly failed an initial 0.90 gate; this policy change is recorded in the work log and failure evidence. The API reads `MODEL_PATH` and accepts `POST /predict` with `{"instances": [[5.1, 3.5, 1.4, 0.2]]}`. `/health/live` reports process health; `/health/ready` returns 503 unless an approved model loads. `/version` returns the actual MLflow run, Git commit and DVC hash. A high test score on Iris does not establish production suitability.
+
+Airflow writes artifacts under `artifacts/runs/<run-key>/`. After a run's gate passes, explicitly copy its `model.joblib` and `metadata.json` together into `artifacts/` before packaging that candidate. Keep the run identifier in deployment annotations.
+
+## Deploy to an isolated Kubernetes cluster
+
+```bash
+mkdir -p .kube
+kind create cluster --name assignment03 --kubeconfig "$PWD/.kube/assignment03-config"
+export KUBECONFIG="$PWD/.kube/assignment03-config"
+export KUBE_NAMESPACE=mlops
+IMAGE=$(python scripts/prepare_deployment.py)
+docker build --target inference -t "$IMAGE" .
+kind load docker-image "$IMAGE" --name assignment03
+kubectl apply -f kubernetes/namespace.yaml
+kubectl apply -f kubernetes/configmap.yaml -f kubernetes/service.yaml
+kubectl apply -f .kube/deployment.yaml
+kubectl -n mlops rollout status deployment/prediction-api --timeout=120s
+kubectl -n mlops port-forward service/prediction-api 8000:80
+```
+
+For operational reads, create short-lived reader credentials after deployment:
+
+```bash
+python scripts/create_reader_config.py
+export KUBECONFIG="$PWD/.kube/agent-config"
+```
+
+The helper applies the reader role, creates a one-hour service-account token and writes it with mode 0600; it never prints the token. Keep the operator kubeconfig for explicit deployment administration. Reader credentials cannot restart the application unless the separate optional restart role is deliberately granted. For a later refresh, choose a new `--output` filename and point `KUBECONFIG` at it; the helper deliberately refuses to replace an existing credential file.
+
+The renderer checks the approved metadata and uses a unique image tag and model identity annotation. Review the rendered manifest before applying. Static manifests specify two replicas, ClusterIP, resource bounds, non-root execution and health probes. `kubernetes/rbac.yaml` grants namespace-local reads; use a restricted kubeconfig for the operational agent. `restart-role.yaml` is a separately opt-in patch permission. Deployment containers do not mount service-account tokens. These bootstrap commands are explicit operator actions; the conversational agent itself never deploys automatically.
+
+## Talk to the agent
+
+```bash
+python -m agent.main --list-tools
+python -m agent.main 'Which dataset version is tracked by DVC?'
+python -m agent.main 'Compare the last five training runs and find the best model by F1.'
+python -m agent.main 'Why is my prediction API unavailable?'
+python -m agent.main 'Find the best recent model, identify its dataset version, check deployment status, and explain whether retraining is necessary.'
+python -m agent.main 'tool airflow_list_dags {}'
+python -m agent.main 'tool mlflow_run_details {"run_id":"YOUR_ACTUAL_RUN_ID"}'
+```
+
+With no message, the CLI opens an interactive read interface. The default `rules` planner handles documented scenarios and explicit `tool <name> <JSON>` requests. For free-form LLM tool selection, set `OPENAI_API_KEY`/`OPENAI_MODEL` and pass `--mode llm`. The implementation calls the supported OpenAI Responses API using HTTPX; final reports are rendered from structured evidence. The LLM is tested with mocked API responses in CI; no live LLM execution is claimed without a supplied key.
+
+Outputs separate `facts`, `uncertainties`, `recommendations` and `evidence`. Audit logs go to stderr and contain tool name/status/duration/request identifier; result JSON goes to stdout.
+
+Explicit mutations use a separate capability flag:
+
+```bash
+python -m agent.main 'Trigger the approved training pipeline' --confirm airflow_trigger_dag
+python -m agent.main 'Restart the deployment' --confirm kubernetes_restart_deployment
+```
+
+The model cannot set the confirmation input. A trigger acknowledges scheduling; query `airflow_run_status` with its returned DAG/run IDs to verify execution. Restart acknowledgement similarly requires subsequent health inspection. Retraining necessity requires a supplied positive `MODEL_MAX_AGE_DAYS` freshness policy, recorded failed gate or explicit degradation evidence; assessment never starts training by itself.
+
+## Verify and export evidence
+
+```bash
 ruff check .
 ruff format --check .
+pytest -q
+python -m scripts.collect_evidence --reproduce-data
+# This explicitly starts the approved DAG and polls its real task states:
+python -m scripts.collect_evidence --trigger --max-wait 120 --reproduce-data
 ```
 
-Dependencies are pinned in `requirements.lock`, generated from `pyproject.toml`. `pathspec==0.12.1` and `sqlalchemy==2.0.44` prevent
-compatibility errors found during real DVC/MLflow execution. Airflow uses a separate
-environment with its official constraints. Never commit `.env` or credentials.
+Ordinary tests use mocked external calls and include actual local data/training/inference checks. CI runs lint, formatting, pytest and a separate Airflow DAG-import job on pull requests and pushes. Live collection exports five conversations and optional historical data restoration under ignored `evidence/live/`; review and sanitize selected snapshots before committing them. No mocked infrastructure response is presented as live service evidence.
 
-## 2. Reconstruct and inspect DVC data
+Use `git log --reverse --oneline` to inspect sequenced milestones. To submit, connect this repository to the intended GitHub remote and push the commits; repository publication is independent of local checks.
 
-The CSV is the scikit-learn bundled Iris dataset: 150 rows, four measurements,
-three classes. It contains no private data. On a fresh Git clone, bootstrap the
-local demonstration remote deterministically:
+To stop only this demonstration, use `docker compose -p assignment03 stop` and `kind delete cluster --name assignment03 --kubeconfig "$PWD/.kube/assignment03-config"`. Keep volumes if retaining MLflow experiments.
 
-```bash
-python -m training.train generate
-# Verify the generated data matches the committed pointer:
-python -c 'from training.train import provenance; print(provenance())'
-dvc add data/iris.csv
-dvc push data/iris.csv.dvc
-dvc status
-mlops-agent 'Which dataset version is current?'
-```
+## Submission and hosted checks
 
-The committed remote is `.local-dvc-remote`, a local teaching remote. For a shared
-remote, configure its URL and credentials locally (`dvc remote modify --local`).
-To demonstrate recovery without altering your current work:
-
-```bash
-revision=$(git rev-parse HEAD)
-remote_path="$PWD/.local-dvc-remote"
-git worktree add --detach ../dataset-reproduction "$revision"
-(cd ../dataset-reproduction && dvc remote modify --local local url "$remote_path" && dvc pull data/iris.csv.dvc)
-```
-
-Compare pointers with `DVCTools.execute(ToolInput(operation='diff', reference=...,
-other_reference=...))`. Do not claim a version exists unless it is in Git/DVC.
-
-## 3. Start MLflow and train
-
-In terminal 1 (activated project venv):
-
-```bash
-mlflow server --host 127.0.0.1 --port 5000 \
-  --backend-store-uri sqlite:///mlflow.db --artifacts-destination ./mlruns
-```
-
-In terminal 2:
-
-```bash
-source .venv/bin/activate
-export MLFLOW_TRACKING_URI=http://127.0.0.1:5000
-export MLFLOW_EXPERIMENT=iris-training
-dvc repro
-python -m training.train all --c 0.1
-python -m training.train all --c 2.0
-mlops-agent 'Compare the best recent model'
-```
-
-`dvc repro` runs validation/preprocessing, training, evaluation and the quality
-gate. Every run checks dataset provenance before logging metrics and artifacts.
-A model with the highest F1 is only a candidate, not automatically production-ready.
-Only FINISHED runs with finite metric values are ranked. `limit=5` means latest
-five runs in the configured experiment, not an arbitrary time-based definition.
-
-## 4. Airflow 3
-
-Install Airflow independently to avoid dependency conflicts:
-
-```bash
-python3.12 -m venv .airflow-venv
-.airflow-venv/bin/pip install 'apache-airflow==3.1.1' \
-  -c https://raw.githubusercontent.com/apache/airflow/constraints-3.1.1/constraints-3.12.txt
-export AIRFLOW_HOME="$PWD/.airflow"
-export AIRFLOW__CORE__DAGS_FOLDER="$PWD/dags"
-export AIRFLOW__CORE__LOAD_EXAMPLES=false
-export MLOPS_ROOT="$PWD"
-export MLOPS_PYTHON="$PWD/.venv/bin/python"
-export PATH="$PWD/.airflow-venv/bin:$PATH"
-airflow standalone
-```
-
-Airflow creates local admin credentials under `.airflow`; keep them private. Use
-the UI at localhost:8080 to unpause `iris_training`. Obtain an API JWT using the
-`/auth/token` endpoint and export it as `AIRFLOW_TOKEN`. The helper below reads
-local generated credentials without printing them, triggers a real DAG run,
-waits for completion and exports sanitized task evidence.
-
-```bash
-# Stop manually launched services first: the helper owns ports 5000 and 8080.
-AIRFLOW_PYTHON="$PWD/.airflow-venv/bin/python" \
-  .venv/bin/python scripts/run_local_evidence.py
-```
-
-For an already running Airflow service:
-
-```bash
-mlops-agent 'Trigger the training pipeline' --approve airflow.trigger:iris_training
-# Type CONFIRM when prompted. A queued run is not a successful run.
-mlops-agent 'Report pipeline status'
-```
-
-## 5. Inference and Kubernetes
-
-Test inference locally using a model that passed the gate:
-
-```bash
-uvicorn api.main:app --host 127.0.0.1 --port 8000
-curl -X POST localhost:8000/predict -H 'Content-Type: application/json' \
-  -d '{"features":[5.1,3.5,1.4,0.2]}'
-```
-
-Render deployment manifests from the approved artifact. The renderer verifies the model SHA-256,
-quality gate and run ID, then replaces the sample placeholders in both the ConfigMap
-and Deployment. Use a new image tag for each model version.
-
-```bash
-kind create cluster --name mlops-assignment
-docker build -t iris-api:local-v1 .
-kind load docker-image iris-api:local-v1 --name mlops-assignment
-python scripts/render_deployment.py --image iris-api:local-v1 > artifacts/deploy.yaml
-kubectl apply -f artifacts/deploy.yaml
-kubectl -n mlops-demo rollout status deployment/iris-api --timeout=120s
-kubectl -n mlops-demo get pods,deployments,services
-kubectl -n mlops-demo port-forward service/iris-api 8000:80
-```
-
-The sample image is local and uses `IfNotPresent`; production should use immutable
-image digests and a registry. The agent reads your configured kubeconfig or an
-in-cluster service account. The supplied reader RBAC does not grant restart rights.
-
-```bash
-mlops-agent 'Why is my prediction API unavailable?'
-mlops-agent 'Find the best recent model, identify the dataset version used to train it, check deployment status, and explain whether retraining is necessary'
-```
-
-Capture actual cluster evidence after deployment:
-
-```bash
-mlops-agent 'Why is my prediction API unavailable?' > evidence/04-deployment-conversation.json
-mlops-agent 'Find the best recent model and explain whether retraining is necessary' > evidence/05-multitool-conversation.json
-```
-
-## 6. Natural-language LLM mode
-
-Set `OPENAI_API_KEY` privately and optionally `OPENAI_MODEL`, then add `--llm`:
-
-```bash
-mlops-agent 'Find the best recent model and check its deployed version' --llm
-```
-
-The model returns a Pydantic-validated plan of structured tool calls. Plans are
-bounded to 20 calls and cannot approve their own mutations. Without `--llm`, a
-small documented rule-based router supports the demonstration phrases. No live
-LLM result is claimed without an actual API response.
-
-Use the Python tool interface for precise run IDs, metric direction, comparisons,
-registry queries, task logs and DVC references. See [architecture](architecture.md)
-for all tool operations and permissions.
-
-## 7. Tests, evidence and failure exercises
-
-`pytest -q` runs isolated tests: real model training/inference plus mocked external
-services. CI executes lint, format checks and tests on pushes and pull requests.
-`evidence/` contains exported records; `docs/technical-report.md` explains scope.
-The local evidence helper deliberately injects a missing data value and a failed
-quality gate into separate artifact directories. It never corrupts the tracked CSV.
-
-To exercise a cluster failure after a successful deployment, intentionally set
-`MODEL_PATH` to a nonexistent file in the ConfigMap, restart the demo Deployment,
-and ask the agent to diagnose it. Restore the original path and restart to recover.
-This is a manual experiment in the dedicated namespace, not a claimed executed test.
-
-## 8. Repository and remaining verification
-
-The project is published at https://github.com/rayyme6/assignment-03-mlops-agent.
-The connected API publishes each development snapshot as a milestone commit;
-`history/development.bundle` retains the original commit objects and timestamps.
-See [history notes](history/README.md) for restoring original provenance references.
-
-The remaining live checks are listed in `docs/submission-checklist.md`.
-
-
-## 9. Automated live integration demonstration
-
-Once hosted Actions jobs can start, open **Actions → Live integration evidence →
-Run workflow**. Select `confirm_demo` to authorize training and deployment to a
-new disposable kind cluster named `mlops-assignment`, namespace `mlops-demo`.
-The workflow runs real DVC, MLflow, Airflow and Kubernetes operations; builds the
-inference image; verifies rollout, model run ID and prediction; and uploads JSON
-evidence as the `live-integration-evidence` artifact. It deletes the test cluster
-when finished. Ordinary pull-request CI continues to mock external services.
-
-For the optional live LLM check, configure `OPENAI_API_KEY` in repository
-**Settings → Secrets and variables → Actions**, then select `run_llm`. This calls
-the configured model and incurs API usage. Never paste the key into code or chat.
-
-The workflow has been authored and its authorization guards tested locally;
-**the hosted integration workflow has not yet executed**. The first hosted CI
-attempt was prevented from starting by an account-level restriction. A green
-local test suite is not evidence of a successful hosted run or Kubernetes rollout.
-
-After a successful integration run, download its artifact, review the exported
-records and update the report with the actual results before submission.
+The completed implementation is published on `assignment03-completion` with [pull request #1](https://github.com/rayyme6/assignment-03-mlops-agent/pull/1). Local checks pass all 153 tests. GitHub currently prevents hosted jobs from starting because of an account billing lock; [the actual status export](evidence/hosted-ci.json) records that restriction. Resolve the account restriction and rerun `assignment-checks` to obtain a hosted result. The existing main branch is preserved pending review.

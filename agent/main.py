@@ -1,28 +1,44 @@
+"""Console interface. Confirmation is a separate operator-supplied capability."""
+
+from __future__ import annotations
+
 import argparse
+import json
 import logging
 
-from agent.orchestrator import Agent
+from agent.executor import MUTATIONS
+from agent.orchestrator import Orchestrator
+from agent.schemas import AgentRequest
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Evidence-first MLOps agent")
-    parser.add_argument("question")
-    parser.add_argument("--llm", action="store_true", help="Use OpenAI structured planning")
-    parser.add_argument(
-        "--approve",
-        action="append",
-        default=[],
-        help="Exact action:target, e.g. airflow.trigger:iris_training",
-    )
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("message", nargs="?")
+    parser.add_argument("--mode", choices=["rules", "llm"], default="rules")
+    parser.add_argument("--confirm", action="append", choices=sorted(MUTATIONS), default=[])
+    parser.add_argument("--list-tools", action="store_true")
     args = parser.parse_args()
-    # Approval originates from the human CLI, never from generated tool arguments.
-    if args.approve:
-        print("Requested authorization: " + ", ".join(args.approve))
-        if input("Type CONFIRM to authorize these operations: ") != "CONFIRM":
-            parser.error("Authorization declined")
     logging.basicConfig(level=logging.INFO, format="%(message)s")
-    result = Agent().ask(args.question, use_llm=args.llm, approvals=frozenset(args.approve))
-    print(result.model_dump_json(indent=2))
+    agent = Orchestrator(mode=args.mode)
+    if args.list_tools:
+        print(json.dumps(agent.executor.definitions(), indent=2))
+        return
+    if args.message:
+        request = AgentRequest(message=args.message, confirmed_tools=args.confirm)
+        print(agent.chat(request).model_dump_json(indent=2))
+        return
+    print(
+        "MLOps agent. Enter a request; /quit exits. Interactive reads only; use --confirm for writes."
+    )
+    while True:
+        try:
+            message = input("> ").strip()
+        except (EOFError, KeyboardInterrupt):
+            return
+        if message == "/quit":
+            return
+        if message:
+            print(agent.chat(AgentRequest(message=message)).model_dump_json(indent=2))
 
 
 if __name__ == "__main__":

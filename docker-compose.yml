@@ -1,0 +1,43 @@
+services:
+  mlflow:
+    image: ghcr.io/mlflow/mlflow:v3.18.0
+    ports:
+      - "127.0.0.1:${MLFLOW_PORT:-5000}:5000"
+    volumes:
+      - mlflow-data:/mlflow
+    command: >-
+      mlflow server --host 0.0.0.0 --port 5000
+      --backend-store-uri sqlite:////mlflow/mlflow.db
+      --artifacts-destination /mlflow/artifacts --serve-artifacts
+      --allowed-hosts "mlflow:5000,localhost:*,127.0.0.1:*"
+  airflow:
+    user: "${AIRFLOW_UID:-1000}:0"
+    build:
+      context: .
+      target: airflow
+    ports:
+      - "127.0.0.1:${AIRFLOW_PORT:-8080}:8080"
+    environment:
+      AIRFLOW__CORE__LOAD_EXAMPLES: "False"
+      AIRFLOW__CORE__DAGS_FOLDER: /opt/mlops/dags
+      AIRFLOW__CORE__SIMPLE_AUTH_MANAGER_USERS: admin:admin
+      MLFLOW_TRACKING_URI: http://mlflow:5000
+      APP_ROOT: /opt/mlops
+      PYTHONPATH: /opt/mlops
+    volumes:
+      - airflow-data:/opt/airflow
+      - .:/opt/mlops
+    command: standalone
+    depends_on:
+      - mlflow
+  prediction-api:
+    build:
+      context: .
+      target: inference
+    ports:
+      - "127.0.0.1:8000:8000"
+    environment:
+      APP_VERSION: "1.0.0"
+volumes:
+  mlflow-data:
+  airflow-data:

@@ -1,26 +1,36 @@
 [build-system]
-requires = ["setuptools>=75"]
+requires = ["setuptools>=68", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "assignment-03-mlops-agent"
-version = "0.1.0"
-requires-python = ">=3.11,<3.13"
+name = "mlops-ai-agent"
+version = "1.0.0"
+description = "Evidence-backed conversational operations for DVC, MLflow, Airflow 3 and Kubernetes"
+requires-python = ">=3.10,<3.13"
 dependencies = [
-  "fastapi==0.121.1", "uvicorn==0.38.0", "pydantic==2.12.4",
-  "httpx==0.28.1", "PyYAML==6.0.3", "mlflow==3.5.1", "sqlalchemy==2.0.44", "dvc==3.63.0", "pathspec==0.12.1",
-  "kubernetes==34.1.0", "openai==2.7.1", "scikit-learn==1.7.2", "pandas==2.3.3",
+  "fastapi==0.162.1", "uvicorn==0.46.0", "httpx==0.28.1",
+  "pydantic==2.13.3", "PyYAML==6.0.3", "mlflow==3.18.0",
+  "scikit-learn==1.7.2", "pandas==2.3.3", "joblib==1.5.3",
+  "dvc==3.67.1", "kubernetes==34.1.0",
 ]
+
 [project.optional-dependencies]
 dev = ["pytest==8.4.2", "ruff==0.14.4"]
+
 [project.scripts]
 mlops-agent = "agent.main:main"
+
 [tool.setuptools.packages.find]
 include = ["agent*", "api*", "training*"]
+
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 pythonpath = ["."]
+addopts = "-ra"
+
 [tool.ruff]
+target-version = "py310"
 line-length = 100
+
 [tool.ruff.lint]
 select = ["E4", "E7", "E9", "F", "I"]

@@ -1,70 +1,33 @@
 schema: '2.0'
 stages:
-  preprocess:
-    cmd: python -m training.train preprocess
+  train:
+    cmd: python3 -m training.train
     deps:
     - path: data/iris.csv
       hash: md5
-      md5: 4224576f0267bf88902f87f0f6200967
-      size: 2757
+      md5: 4d301abed5efe50eccda350cde38e0eb
+      size: 2777
     - path: training/train.py
       hash: md5
-      md5: 76e5cd1a08d52ce370ceb0f8bf187c99
-      size: 6237
+      md5: b041a3a90ad16b8cabe3ea1cac0a743e
+      size: 10724
+    params:
+      params.yaml:
+        training:
+          n_estimators: 100
+          random_state: 42
+          test_size: 0.2
+          min_f1: 0.85
     outs:
-    - path: artifacts/split.joblib
+    - path: artifacts/metadata.json
       hash: md5
-      md5: df5852aae133d4dd0ab1b8c3ec1c6356
-      size: 12747
-  train:
-    cmd: python -m training.train train
-    deps:
-    - path: artifacts/split.joblib
-      hash: md5
-      md5: df5852aae133d4dd0ab1b8c3ec1c6356
-      size: 12747
-    - path: training/train.py
-      hash: md5
-      md5: 76e5cd1a08d52ce370ceb0f8bf187c99
-      size: 6237
-    outs:
-    - path: artifacts/model.joblib
-      hash: md5
-      md5: 6862d85bd9bfe1da543f339754ec5aa2
-      size: 1953
-  evaluate:
-    cmd: python -m training.train evaluate
-    deps:
-    - path: artifacts/model.joblib
-      hash: md5
-      md5: 6862d85bd9bfe1da543f339754ec5aa2
-      size: 1953
-    - path: artifacts/split.joblib
-      hash: md5
-      md5: df5852aae133d4dd0ab1b8c3ec1c6356
-      size: 12747
-    - path: training/train.py
-      hash: md5
-      md5: 76e5cd1a08d52ce370ceb0f8bf187c99
-      size: 6237
-    outs:
+      md5: cc8063c95f85f571d467e383b503ee4a
+      size: 532
     - path: artifacts/metrics.json
       hash: md5
-      md5: 36927cd12a87413ede929f4df892338e
-      size: 460
-  gate:
-    cmd: python -m training.train gate
-    deps:
-    - path: artifacts/metrics.json
+      md5: 1d449dfcdb51b84b9b073dd584b1f7da
+      size: 55
+    - path: artifacts/model.joblib
       hash: md5
-      md5: 36927cd12a87413ede929f4df892338e
-      size: 460
-    - path: training/train.py
-      hash: md5
-      md5: 76e5cd1a08d52ce370ceb0f8bf187c99
-      size: 6237
-    outs:
-    - path: artifacts/approved.json
-      hash: md5
-      md5: 36927cd12a87413ede929f4df892338e
-      size: 460
+      md5: a4a378409a430b1955d1175bb69ec60b
+      size: 168097

@@ -1,0 +1,2 @@
+# Direct dependencies are pinned in pyproject.toml. Install the project and development checks.
+-e .[dev]
