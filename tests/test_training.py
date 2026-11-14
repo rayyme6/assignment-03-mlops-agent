@@ -8,12 +8,49 @@ import pytest
 
 from training.train import (
     ROOT,
+    _validated_tracking_uri,
     dataset_provenance,
+    evaluate_and_log,
     preprocess,
     quality_gate,
     train_model,
     validate_dataset,
 )
+
+
+@pytest.mark.parametrize(
+    "uri",
+    [
+        "http://user:credential-value@localhost:5000",
+        "https://credential-value@tracking.example.test",
+        "https://tracking.example.test?token=credential-value",
+        "https://tracking.example.test#credential-value",
+    ],
+)
+def test_credentialed_tracking_endpoint_rejected_before_artifacts_or_logs(
+    tmp_path, monkeypatch, caplog, uri
+):
+    monkeypatch.setenv("MLFLOW_TRACKING_URI", uri)
+    output = tmp_path / "artifacts"
+    # Missing inputs prove validation precedes model loading and MLflow logging.
+    with pytest.raises(ValueError, match="MLFLOW_TRACKING_PASSWORD") as failure:
+        evaluate_and_log(tmp_path / "missing-model", tmp_path / "missing-data", output)
+    assert "credential-value" not in str(failure.value)
+    assert "credential-value" not in caplog.text
+    assert not output.exists()
+
+
+@pytest.mark.parametrize(
+    "uri",
+    [
+        "http://localhost:5000",
+        "https://tracking.example.test/mlflow",
+        "sqlite:////tmp/local-tracking.db",
+        "file:///tmp/mlruns",
+    ],
+)
+def test_credential_free_and_local_tracking_references_are_preserved(uri):
+    assert _validated_tracking_uri(uri) == uri
 
 
 def test_valid_iris_dataset_has_real_rows_and_features():

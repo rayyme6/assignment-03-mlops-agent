@@ -299,16 +299,28 @@ class Orchestrator:
                     response.recommendations.append(
                         "Validate quality gate, representativeness and operational health before promotion; metric rank alone is insufficient."
                     )
+                    gate = best.get("provenance", {}).get("quality_gate") or best.get(
+                        "tags", {}
+                    ).get("quality_gate")
                     policy = os.getenv("MODEL_MAX_AGE_DAYS")
-                    if policy and best.get("start_time"):
+                    if policy:
                         try:
                             threshold = float(policy)
-                            if threshold <= 0:
-                                raise ValueError("Age policy must be positive")
-                            age = (
-                                datetime.now(timezone.utc).timestamp() * 1000 - best["start_time"]
-                            ) / 86400000
-                            if age > threshold:
+                            if not math.isfinite(threshold) or threshold <= 0:
+                                raise ValueError("Age policy must be finite and positive")
+                            timestamp = best.get("start_time")
+                            if timestamp is None:
+                                response.uncertainties.append(
+                                    "Selected run has no start timestamp; the freshness policy cannot be evaluated."
+                                )
+                                age = None
+                            else:
+                                if not math.isfinite(timestamp):
+                                    raise ValueError("Run timestamp must be finite")
+                                age = (
+                                    datetime.now(timezone.utc).timestamp() * 1000 - timestamp
+                                ) / 86400000
+                            if age is not None and age > threshold:
                                 response.recommendations.append(
                                     f"{ref} Retraining recommended: candidate age {age:.1f} days exceeds configured policy {threshold:g} days; confirmation still required."
                                 )
@@ -316,7 +328,7 @@ class Orchestrator:
                             response.uncertainties.append(
                                 "MODEL_MAX_AGE_DAYS or run timestamp is invalid."
                             )
-                    elif not policy:
+                    elif gate != "failed":
                         response.uncertainties.append(
                             "No explicit freshness policy or degradation evidence was supplied; retraining necessity is undetermined."
                         )

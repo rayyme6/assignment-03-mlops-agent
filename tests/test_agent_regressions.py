@@ -1,6 +1,7 @@
 """Correlated identity, recorded gate policy, and one-use confirmation regressions."""
 
 import httpx
+import pytest
 
 from agent.executor import ToolExecutor
 from agent.orchestrator import Orchestrator
@@ -69,11 +70,35 @@ def test_missing_deployed_run_annotation_remains_uncertain():
     assert any("identity cannot be verified" in item for item in response.uncertainties)
 
 
-def test_failed_recorded_gate_supports_retraining_recommendation_without_execution():
+def test_failed_recorded_gate_supports_retraining_recommendation_without_execution(monkeypatch):
+    monkeypatch.delenv("MODEL_MAX_AGE_DAYS", raising=False)
     executor, _ = evidence_executor(gate="failed")
     response = Orchestrator(executor).chat(COMBINED)
     assert any("recorded failed quality gate" in item for item in response.recommendations)
+    assert not any(
+        "retraining necessity is undetermined" in item for item in response.uncertainties
+    )
     assert not any(result.tool == "airflow_trigger_dag" for result in response.evidence)
+
+
+@pytest.mark.parametrize("policy", ["nan", "inf", "-inf", "0", "-1", "invalid"])
+def test_invalid_freshness_policy_is_reported_without_retraining_inference(monkeypatch, policy):
+    monkeypatch.setenv("MODEL_MAX_AGE_DAYS", policy)
+    executor, _ = evidence_executor()
+    response = Orchestrator(executor).chat(COMBINED)
+    assert any(
+        "MODEL_MAX_AGE_DAYS or run timestamp is invalid" in item for item in response.uncertainties
+    )
+    assert not any("Retraining recommended" in item for item in response.recommendations)
+    assert not any(result.tool == "airflow_trigger_dag" for result in response.evidence)
+
+
+def test_valid_freshness_policy_without_timestamp_remains_uncertain(monkeypatch):
+    monkeypatch.setenv("MODEL_MAX_AGE_DAYS", "30")
+    executor, _ = evidence_executor()
+    response = Orchestrator(executor).chat(COMBINED)
+    assert any("freshness policy cannot be evaluated" in item for item in response.uncertainties)
+    assert not any("Retraining recommended" in item for item in response.recommendations)
 
 
 def test_recorded_dvc_metadata_path_is_used_instead_of_inferred_filename():

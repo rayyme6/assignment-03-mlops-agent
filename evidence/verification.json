@@ -1,7 +1,7 @@
 {
   "kind": "local-automated-verification",
-  "observed_at": "2026-11-14T11:55:00.063559+00:00",
-  "source_commit": "d6e832c52ce7d1bdccb9a47fa65b19de07e5fffe",
+  "observed_at": "2026-11-14T11:58:43.687830+00:00",
+  "source_commit": "4fc968c905b44dbd1d289f1e3a2f29eea2468d92",
   "branch": "assignment03-completion",
   "scope": "Real local automated checks; ordinary external service calls use test doubles. This does not establish hosted CI or live service availability.",
   "environment": {
@@ -25,11 +25,11 @@
       "command": ".venv/bin/python -m pytest -q --junitxml=evidence/tests.xml",
       "status": "passed",
       "exit_code": 0,
-      "tests": 135,
+      "tests": 150,
       "failures": 0,
       "errors": 0,
       "skipped": 0,
-      "duration_seconds": 14.078,
+      "duration_seconds": 27.805,
       "junit": "evidence/tests.xml"
     }
   ],
@@ -37,5 +37,14 @@
     "fresh_clone_data_generation": "python scripts/create_dataset.py precedes pytest",
     "airflow_environment": "Separate constrained Apache Airflow 3.1.3 installation; no incompatible base optional extra",
     "hosted_ci_executed": false
-  }
+  },
+  "source_commit_is_parent": true,
+  "working_tree_changes": true,
+  "tested_tracked_diff_sha256": "ca947fac270c41799074c0c273505e3c676bad5de3b8b6c2061c08f7d6276b56",
+  "source_note": "Checks include the uncommitted review fixes on this parent; the diff fingerprint identifies the tested tracked edits.",
+  "review_fixes": [
+    "Failed quality gate is no longer contradicted by undetermined retraining necessity.",
+    "Freshness policies must be finite and positive; missing timestamps remain explicit uncertainties.",
+    "HTTP(S) tracking endpoints with embedded credentials, queries or fragments are rejected before evaluation logging."
+  ]
 }

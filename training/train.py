@@ -11,6 +11,7 @@ import shutil
 import subprocess
 from datetime import datetime, timezone
 from pathlib import Path
+from urllib.parse import urlsplit
 
 import joblib
 import numpy as np
@@ -23,6 +24,27 @@ from sklearn.model_selection import train_test_split
 ROOT = Path(__file__).resolve().parents[1]
 FEATURES = ["sepal length (cm)", "sepal width (cm)", "petal length (cm)", "petal width (cm)"]
 LOG = logging.getLogger(__name__)
+
+
+def _validated_tracking_uri(uri: str) -> str:
+    """Keep credentials out of persisted metadata; use MLflow auth environment variables."""
+    message = (
+        "HTTP(S) tracking endpoints must omit credentials, queries and fragments; use "
+        "MLFLOW_TRACKING_USERNAME, MLFLOW_TRACKING_PASSWORD or MLFLOW_TRACKING_TOKEN."
+    )
+    try:
+        parsed = urlsplit(uri)
+        if parsed.scheme.lower() in {"http", "https"} and (
+            parsed.username is not None
+            or parsed.password is not None
+            or parsed.query
+            or parsed.fragment
+        ):
+            raise ValueError(message)
+    except (TypeError, ValueError):
+        # Invalid URLs can themselves contain credentials, so never echo their values.
+        raise ValueError(message) from None
+    return uri
 
 
 def _write_json(path: Path, value: dict) -> None:
@@ -131,6 +153,9 @@ def evaluate_and_log(
     output_dir: str | Path,
     tracking_uri: str | None = None,
 ) -> dict:
+    tracking = _validated_tracking_uri(
+        tracking_uri or os.getenv("MLFLOW_TRACKING_URI", f"sqlite:///{ROOT / 'mlflow.db'}")
+    )
     import mlflow
 
     output = Path(output_dir)
@@ -141,7 +166,6 @@ def evaluate_and_log(
         "accuracy": float(accuracy_score(prepared["y_test"], predictions)),
         "f1_score": float(f1_score(prepared["y_test"], predictions, average="macro")),
     }
-    tracking = tracking_uri or os.getenv("MLFLOW_TRACKING_URI", f"sqlite:///{ROOT / 'mlflow.db'}")
     mlflow.set_tracking_uri(tracking)
     mlflow.set_experiment(os.getenv("MLFLOW_EXPERIMENT_NAME", "Iris-Classification"))
     with mlflow.start_run(run_name=f"RF-{model.n_estimators}") as run:

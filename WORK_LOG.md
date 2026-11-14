@@ -93,3 +93,10 @@ Commits are made when each milestone is verified. Commit timestamps reflect when
 - Retained actual local failure exports and machine-readable test evidence; no live LLM execution is claimed without an API key.
 - On resuming, the isolated Kubernetes deployment was 2/2 ready. The demonstration MLflow/Airflow containers had stopped during an external runtime interruption; only these assignment containers are being restarted.
 - Full resumed checks: 135 pytest cases passed, Ruff lint and formatting passed. Further live workflow and controlled rollout observations will be added separately.
+
+## Final policy and credential review verified
+
+- Corrected contradictory retraining uncertainty when recorded failed-gate evidence already supports a recommendation.
+- Rejected nonfinite/nonpositive freshness policies and retained explicit uncertainty for missing run timestamps.
+- Rejected credential-bearing HTTP tracking endpoints before evaluation reads or logging; authentication belongs in separate MLflow environment variables.
+- Full suite: 150 tests passed in 27.82 seconds. Ruff lint, formatting and whitespace checks passed; the verification export records the exact tested source diff.
