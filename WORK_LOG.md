@@ -39,3 +39,9 @@ Commits are made when each milestone is verified. Commit timestamps reflect when
 - Added revision/path validation, provenance checks, recent-run metric comparison and registry inspection.
 - `python3 -m pytest -q tests/test_dvc_tools.py tests/test_mlflow_tools.py`: 32 passed.
 - DVC's protected global cache was resolved by selecting a repository-local `DVC_SITE_CACHE_DIR`.
+
+## Workflow and cluster tools verified
+
+- Implemented six JWT-authenticated Airflow 3 API tools and seven Kubernetes operations.
+- Triggering is restricted to an approved DAG; namespace boundaries and explicit restart confirmation are enforced before connecting.
+- `python3 -m pytest -q tests/test_airflow_tools.py tests/test_kubernetes_tools.py`: 22 passed, including timeout and authorization failures.
