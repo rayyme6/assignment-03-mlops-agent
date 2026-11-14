@@ -1,0 +1,14 @@
+stages:
+  train:
+    cmd: python3 -m training.train
+    deps:
+      - data/iris.csv
+      - training/train.py
+    params:
+      - training
+    outs:
+      - artifacts/model.joblib
+      - artifacts/metadata.json
+    metrics:
+      - artifacts/metrics.json:
+          cache: false

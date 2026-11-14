@@ -1,0 +1,25 @@
+# Optional: apply separately only when the operator enables confirmed restarts.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: mlops-agent-restarter
+  namespace: mlops
+rules:
+  - apiGroups: [apps]
+    resources: [deployments]
+    resourceNames: [prediction-api]
+    verbs: [get, patch]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: mlops-agent-restarter
+  namespace: mlops
+subjects:
+  - kind: ServiceAccount
+    name: mlops-agent
+    namespace: mlops
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: mlops-agent-restarter

@@ -45,3 +45,11 @@ Commits are made when each milestone is verified. Commit timestamps reflect when
 - Implemented six JWT-authenticated Airflow 3 API tools and seven Kubernetes operations.
 - Triggering is restricted to an approved DAG; namespace boundaries and explicit restart confirmation are enforced before connecting.
 - `python3 -m pytest -q tests/test_airflow_tools.py tests/test_kubernetes_tools.py`: 22 passed, including timeout and authorization failures.
+
+## Training, serving and deployment verified
+
+- Added the five-stage Airflow 3 DAG, deterministic training CLI, recorded provenance and a blocking F1 quality gate.
+- Inference loads only approved artifacts, validates feature input, and exposes separate liveness/readiness and version endpoints.
+- Kubernetes configuration includes two replicas, ClusterIP, probes, bounded resources and namespace-scoped RBAC.
+- Added container builds, isolated local Compose services, DVC pipeline and dataset bootstrap instructions.
+- All 12 training/inference/DAG tests passed. In this environment FastAPI tests require sandbox escalation because cross-thread event-loop signaling is restricted.

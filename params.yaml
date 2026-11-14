@@ -1,0 +1,5 @@
+training:
+  n_estimators: 100
+  random_state: 42
+  test_size: 0.2
+  min_f1: 0.9
