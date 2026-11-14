@@ -7,8 +7,11 @@ from agent.tools.airflow_tools import AirflowTools
 
 
 def make_tools(handler):
-    return AirflowTools(base_url="http://airflow:8080", token="test-jwt",
-                        client=httpx.Client(transport=httpx.MockTransport(handler)))
+    return AirflowTools(
+        base_url="http://airflow:8080",
+        token="test-jwt",
+        client=httpx.Client(transport=httpx.MockTransport(handler)),
+    )
 
 
 def test_airflow3_authentication_and_run_order():
@@ -60,11 +63,18 @@ def test_trigger_has_unique_auditable_id():
 
 
 def test_failed_tasks_distinguishes_skipped_upstream():
-    tools = make_tools(lambda request: httpx.Response(200, json={"task_instances": [
-        {"task_id": "validate", "state": "failed"},
-        {"task_id": "train", "state": "upstream_failed"},
-        {"task_id": "evaluate", "state": "success"},
-    ]}))
+    tools = make_tools(
+        lambda request: httpx.Response(
+            200,
+            json={
+                "task_instances": [
+                    {"task_id": "validate", "state": "failed"},
+                    {"task_id": "train", "state": "upstream_failed"},
+                    {"task_id": "evaluate", "state": "success"},
+                ]
+            },
+        )
+    )
     result = tools.failed_tasks("training_pipeline", "run:one")
     assert [task["task_id"] for task in result["failed_tasks"]] == ["validate", "train"]
 
@@ -101,7 +111,9 @@ def test_invalid_id_and_limits_rejected_before_call():
 def test_run_status_collects_actual_task_states():
     def handler(request):
         if request.url.path.endswith("taskInstances"):
-            return httpx.Response(200, json={"task_instances": [{"task_id": "validate", "state": "success"}]})
+            return httpx.Response(
+                200, json={"task_instances": [{"task_id": "validate", "state": "success"}]}
+            )
         return httpx.Response(200, json={"dag_run_id": "run1", "state": "running"})
 
     result = make_tools(handler).run_status("training_pipeline", "run1")
@@ -110,7 +122,9 @@ def test_run_status_collects_actual_task_states():
 
 
 def test_logs_redact_common_secret_assignments():
-    tools = make_tools(lambda request: httpx.Response(200, json={"content": "password=private validation failed"}))
+    tools = make_tools(
+        lambda request: httpx.Response(200, json={"content": "password=private validation failed"})
+    )
     result = tools.task_logs("training_pipeline", "run1", "validate")
     assert "private" not in result["logs"]["content"]
     assert "validation failed" in result["logs"]["content"]

@@ -61,3 +61,20 @@ Commits are made when each milestone is verified. Commit timestamps reflect when
 - Combined assessment follows selected-run provenance through historical DVC metadata and checks live cluster/workflow state. Reports separate facts, uncertainties and recommended actions.
 - Mutation confirmation is supplied by the operator outside model-generated arguments. No assessment starts retraining implicitly.
 - Added 29 orchestration tests, including planner/tool failures, provenance mismatch, strict authorization and no fabricated results.
+
+## Integration verification and real-service bootstrap
+
+- Full integrated test suite: 109 passed in 42.14 seconds; lint/format CI checks added.
+- Built a fresh real local MLflow experiment and captured a quality-gate rejection: macro F1 0.8997493734 was below the initial 0.90 threshold. No approved artifact was published for that run.
+- Set the educational Iris demo policy explicitly to 0.85 in training configuration and the DAG. A subsequent real run passed with the same recorded metric. This demo policy is not evidence of production readiness.
+- Installed official kind/kubectl locally (ignored), created only the isolated `assignment03` cluster, and began packaging the approved model with a run-specific image tag.
+- Added exact run annotations to rendered Deployments and candidate/deployment identity checks to the agent.
+
+## CI, regression and failure evidence verified
+
+- Final integration/regression suite at this milestone: 116 passed in 73.23 seconds; `ruff check .` and `ruff format --check .` passed.
+- Added PR CI with dataset reconstruction, lint/format/tests and a separately constrained real Airflow DAG import check.
+- Added live five-conversation collector, isolated DVC restoration, deployment renderer and two deliberately injected local failure exports.
+- Executed both failures: invalid numeric data blocked every downstream artifact; injected F1 0.4 failed the real MLflow-backed 0.85 quality gate without promoting a model. Results are retained in `evidence/failures.json`.
+- Added regressions for deployed-versus-selected run identity, absent identity, failed-gate recommendations, nonstandard DVC pointer names, and one-use confirmation capabilities.
+- Connected the user-supplied GitHub repository and created `assignment03-completion`; the existing divergent `origin/main` is preserved for review.

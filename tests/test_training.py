@@ -64,9 +64,9 @@ def test_failed_quality_gate_never_produces_approved_model(tmp_path, monkeypatch
     client = Mock()
     monkeypatch.setattr(mlflow, "MlflowClient", lambda **kwargs: client)
     (tmp_path / "metrics.json").write_text(json.dumps({"f1_score": 0.4}))
-    (tmp_path / "candidate_metadata.json").write_text(json.dumps(
-        {"run_id": "test-run", "tracking_uri": "sqlite:///not-used.db"}
-    ))
+    (tmp_path / "candidate_metadata.json").write_text(
+        json.dumps({"run_id": "test-run", "tracking_uri": "sqlite:///not-used.db"})
+    )
     (tmp_path / "candidate.joblib").write_text("not promoted")
     with pytest.raises(ValueError, match="Quality gate failed"):
         quality_gate(tmp_path / "metrics.json", tmp_path, min_f1=0.9)
@@ -81,9 +81,9 @@ def test_passed_quality_gate_publishes_matching_provenance(tmp_path, monkeypatch
 
     monkeypatch.setattr(mlflow, "MlflowClient", lambda **kwargs: Mock())
     (tmp_path / "metrics.json").write_text(json.dumps({"f1_score": 0.95}))
-    (tmp_path / "candidate_metadata.json").write_text(json.dumps(
-        {"run_id": "test-run", "tracking_uri": "sqlite:///not-used.db"}
-    ))
+    (tmp_path / "candidate_metadata.json").write_text(
+        json.dumps({"run_id": "test-run", "tracking_uri": "sqlite:///not-used.db"})
+    )
     (tmp_path / "candidate.joblib").write_bytes(b"candidate")
     result = quality_gate(tmp_path / "metrics.json", tmp_path)
     assert result["state"] == "passed"

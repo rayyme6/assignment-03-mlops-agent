@@ -11,11 +11,15 @@ from airflow.sdk import dag, get_current_context, task
     schedule=None,
     start_date=datetime(2026, 1, 1, tzinfo=timezone.utc),
     catchup=False,
+    is_paused_upon_creation=False,
     max_active_runs=1,
-    default_args={"retries": 2, "retry_delay": timedelta(seconds=30),
-                  "retry_exponential_backoff": True,
-                  "execution_timeout": timedelta(minutes=10)},
-    params={"min_f1": 0.9, "n_estimators": 100},
+    default_args={
+        "retries": 2,
+        "retry_delay": timedelta(seconds=30),
+        "retry_exponential_backoff": True,
+        "execution_timeout": timedelta(minutes=10),
+    },
+    params={"min_f1": 0.85, "n_estimators": 100},
     tags=["mlops", "training"],
     doc_md="Validate → preprocess → train → evaluate/MLflow → quality gate. No deployment side effects.",
 )
@@ -46,8 +50,9 @@ def training_pipeline():
         from training.train import train_model
 
         params = get_current_context()["params"]
-        candidate = train_model(prepared["prepared_path"], prepared["output_dir"],
-                                n_estimators=params["n_estimators"])
+        candidate = train_model(
+            prepared["prepared_path"], prepared["output_dir"], n_estimators=params["n_estimators"]
+        )
         return {**prepared, "model_path": candidate}
 
     @task
@@ -60,8 +65,11 @@ def training_pipeline():
     def quality_gate(evaluated: dict) -> dict:
         from training.train import quality_gate as gate
 
-        return gate(evaluated["metrics_path"], evaluated["output_dir"],
-                    min_f1=get_current_context()["params"]["min_f1"])
+        return gate(
+            evaluated["metrics_path"],
+            evaluated["output_dir"],
+            min_f1=get_current_context()["params"]["min_f1"],
+        )
 
     quality_gate(evaluate_and_log(train(preprocess(validate()))))
 

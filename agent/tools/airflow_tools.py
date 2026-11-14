@@ -82,8 +82,11 @@ class AirflowTools:
         dag, run = _identifier(dag_id, "DAG ID"), _identifier(run_id, "run ID")
         run_data = self._request("GET", f"/dags/{dag}/dagRuns/{run}")
         tasks = self._request("GET", f"/dags/{dag}/dagRuns/{run}/taskInstances")
-        return {"run": run_data, "task_instances": tasks.get("task_instances", []),
-                "total_entries": tasks.get("total_entries")}
+        return {
+            "run": run_data,
+            "task_instances": tasks.get("task_instances", []),
+            "total_entries": tasks.get("total_entries"),
+        }
 
     def trigger_dag(
         self,
@@ -101,36 +104,55 @@ class AirflowTools:
         # A unique client-generated run ID makes any uncertain acceptance auditable.
         now = datetime.now(timezone.utc).isoformat()
         return self._request(
-            "POST", f"/dags/{dag}/dagRuns",
+            "POST",
+            f"/dags/{dag}/dagRuns",
             json={"dag_run_id": f"agent__{uuid4().hex}", "logical_date": now, "conf": conf or {}},
         )
 
     def failed_tasks(self, dag_id: str, run_id: str) -> dict:
         dag, run = _identifier(dag_id, "DAG ID"), _identifier(run_id, "run ID")
-        data = self._request("GET", f"/dags/{dag}/dagRuns/{run}/taskInstances", params={"limit": 100})
+        data = self._request(
+            "GET", f"/dags/{dag}/dagRuns/{run}/taskInstances", params={"limit": 100}
+        )
         tasks = data.get("task_instances", [])
-        return {"dag_id": dag_id, "run_id": run_id,
-                "failed_tasks": [task for task in tasks if task.get("state") in {"failed", "upstream_failed"}],
-                "total_entries": data.get("total_entries"),
-                "diagnostic": "Inspect logs for failed tasks; upstream_failed tasks did not execute."}
+        return {
+            "dag_id": dag_id,
+            "run_id": run_id,
+            "failed_tasks": [
+                task for task in tasks if task.get("state") in {"failed", "upstream_failed"}
+            ],
+            "total_entries": data.get("total_entries"),
+            "diagnostic": "Inspect logs for failed tasks; upstream_failed tasks did not execute.",
+        }
 
     def task_logs(self, dag_id: str, run_id: str, task_id: str, try_number: int = 1) -> dict:
         dag, run = _identifier(dag_id, "DAG ID"), _identifier(run_id, "run ID")
         task = _identifier(task_id, "task ID")
         attempt = _limit(try_number, maximum=1000)
         data = self._request(
-            "GET", f"/dags/{dag}/dagRuns/{run}/taskInstances/{task}/logs/{attempt}",
+            "GET",
+            f"/dags/{dag}/dagRuns/{run}/taskInstances/{task}/logs/{attempt}",
             params={"full_content": True},
         )
+
         # Credentials occasionally appear in task output; redact common assignments.
         def redact(value):
             if isinstance(value, str):
-                return re.sub(r"(?i)(token|password|api[_-]?key|secret)(\s*[:=]\s*)[^\s,;]+",
-                              r"\1\2[REDACTED]", value)
+                return re.sub(
+                    r"(?i)(token|password|api[_-]?key|secret)(\s*[:=]\s*)[^\s,;]+",
+                    r"\1\2[REDACTED]",
+                    value,
+                )
             if isinstance(value, list):
                 return [redact(item) for item in value]
             if isinstance(value, dict):
                 return {key: redact(item) for key, item in value.items()}
             return value
-        return {"dag_id": dag_id, "run_id": run_id, "task_id": task_id,
-                "try_number": attempt, "logs": redact(data)}
+
+        return {
+            "dag_id": dag_id,
+            "run_id": run_id,
+            "task_id": task_id,
+            "try_number": attempt,
+            "logs": redact(data),
+        }

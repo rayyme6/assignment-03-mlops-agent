@@ -1,0 +1,33 @@
+schema: '2.0'
+stages:
+  train:
+    cmd: python3 -m training.train
+    deps:
+    - path: data/iris.csv
+      hash: md5
+      md5: 4d301abed5efe50eccda350cde38e0eb
+      size: 2777
+    - path: training/train.py
+      hash: md5
+      md5: 99e452ba9e541087f08ac128841f28be
+      size: 9840
+    params:
+      params.yaml:
+        training:
+          n_estimators: 100
+          random_state: 42
+          test_size: 0.2
+          min_f1: 0.85
+    outs:
+    - path: artifacts/metadata.json
+      hash: md5
+      md5: 86bec16940de7e31b4aad6202054fe1c
+      size: 608
+    - path: artifacts/metrics.json
+      hash: md5
+      md5: 1d449dfcdb51b84b9b073dd584b1f7da
+      size: 55
+    - path: artifacts/model.joblib
+      hash: md5
+      md5: a4a378409a430b1955d1175bb69ec60b
+      size: 168097

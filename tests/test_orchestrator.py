@@ -12,7 +12,6 @@ from agent.executor import ToolExecutor
 from agent.orchestrator import Orchestrator, default_executor
 from agent.schemas import AgentRequest
 
-
 COMBINED = (
     "Find the best recent model, identify the dataset version used to train it, "
     "check deployment status, and explain whether retraining is necessary."
@@ -33,10 +32,19 @@ def fake_executor(hash_value="dataset-v1", fail_best=False):
         calls.append(("mlflow_best_run", {"limit": limit}))
         if fail_best:
             raise ConnectionError("MLflow unavailable token=should-never-leak")
-        return {"best_run": {"run_id": "a" * 32, "metrics": {"f1_score": 0.93},
-                             "start_time": 1_600_000_000_000,
-                             "tags": {"git_commit": "b" * 40, "dataset_path": "data/iris.csv",
-                                      "dvc_hash": "dataset-v1"}}, "metric": "f1_score"}
+        return {
+            "best_run": {
+                "run_id": "a" * 32,
+                "metrics": {"f1_score": 0.93},
+                "start_time": 1_600_000_000_000,
+                "tags": {
+                    "git_commit": "b" * 40,
+                    "dataset_path": "data/iris.csv",
+                    "dvc_hash": "dataset-v1",
+                },
+            },
+            "metric": "f1_score",
+        }
 
     def dataset_version(path: str = "data/iris.csv.dvc", rev: str | None = None):
         calls.append(("dvc_dataset_version", {"path": path, "rev": rev}))
@@ -48,8 +56,11 @@ def fake_executor(hash_value="dataset-v1", fail_best=False):
 
     def deployment_health():
         calls.append(("kubernetes_deployment_health", {}))
-        return {"healthy": False, "unhealthy_pods": [{"name": "prediction-api-123"}],
-                "events": [{"reason": "Unhealthy", "message": "readiness probe failed"}]}
+        return {
+            "healthy": False,
+            "unhealthy_pods": [{"name": "prediction-api-123"}],
+            "events": [{"reason": "Unhealthy", "message": "readiness probe failed"}],
+        }
 
     def list_services():
         calls.append(("kubernetes_list_services", {}))
@@ -74,10 +85,14 @@ def fake_executor(hash_value="dataset-v1", fail_best=False):
         return {"status": "requested"}
 
     for name, function in {
-        "mlflow_best_run": best_run, "dvc_dataset_version": dataset_version,
-        "dvc_data_status": data_status, "kubernetes_deployment_health": deployment_health,
-        "kubernetes_list_services": list_services, "kubernetes_pod_logs": pod_logs,
-        "airflow_list_runs": list_runs, "airflow_trigger_dag": trigger_dag,
+        "mlflow_best_run": best_run,
+        "dvc_dataset_version": dataset_version,
+        "dvc_data_status": data_status,
+        "kubernetes_deployment_health": deployment_health,
+        "kubernetes_list_services": list_services,
+        "kubernetes_pod_logs": pod_logs,
+        "airflow_list_runs": list_runs,
+        "airflow_trigger_dag": trigger_dag,
         "kubernetes_restart_deployment": restart_deployment,
     }.items():
         executor.register(name, function)
@@ -87,18 +102,31 @@ def fake_executor(hash_value="dataset-v1", fail_best=False):
 def test_default_catalog_registers_all_four_services_without_connecting():
     executor = default_executor()
     assert len(executor.tools) >= 24
-    assert {name.split("_")[0] for name in executor.tools} == {"dvc", "mlflow", "airflow", "kubernetes"}
+    assert {name.split("_")[0] for name in executor.tools} == {
+        "dvc",
+        "mlflow",
+        "airflow",
+        "kubernetes",
+    }
     definitions = {item["name"]: item for item in executor.definitions()}
     assert "confirmed" not in definitions["airflow_trigger_dag"]["parameters"]["properties"]
-    assert "confirmed" not in definitions["kubernetes_restart_deployment"]["parameters"]["properties"]
+    assert (
+        "confirmed" not in definitions["kubernetes_restart_deployment"]["parameters"]["properties"]
+    )
 
 
-@pytest.mark.parametrize("message,expected", [
-    ("Which dataset version is current?", ["dvc_dataset_version", "dvc_data_status"]),
-    ("Compare the last five experiments based on F1", ["mlflow_best_run"]),
-    ("Check recent Airflow workflow runs", ["airflow_list_runs"]),
-    ("Why is the prediction API unavailable?", ["kubernetes_deployment_health", "kubernetes_list_services", "kubernetes_pod_logs"]),
-])
+@pytest.mark.parametrize(
+    "message,expected",
+    [
+        ("Which dataset version is current?", ["dvc_dataset_version", "dvc_data_status"]),
+        ("Compare the last five experiments based on F1", ["mlflow_best_run"]),
+        ("Check recent Airflow workflow runs", ["airflow_list_runs"]),
+        (
+            "Why is the prediction API unavailable?",
+            ["kubernetes_deployment_health", "kubernetes_list_services", "kubernetes_pod_logs"],
+        ),
+    ],
+)
 def test_rules_select_and_execute_actual_tools(message, expected):
     executor, calls = fake_executor()
     response = Orchestrator(executor).chat(message)
@@ -110,8 +138,13 @@ def test_rules_select_and_execute_actual_tools(message, expected):
 def test_combined_scenario_correlates_all_four_services_and_never_triggers_training():
     executor, calls = fake_executor()
     response = Orchestrator(executor).chat(COMBINED)
-    assert [name for name, _ in calls] == ["mlflow_best_run", "dvc_dataset_version", "dvc_data_status",
-                                         "kubernetes_deployment_health", "airflow_list_runs"]
+    assert [name for name, _ in calls] == [
+        "mlflow_best_run",
+        "dvc_dataset_version",
+        "dvc_data_status",
+        "kubernetes_deployment_health",
+        "airflow_list_runs",
+    ]
     assert calls[1][1] == {"rev": "b" * 40, "path": "data/iris.csv.dvc"}
     assert any("Historical DVC hash matches" in fact for fact in response.facts)
     assert any("undetermined" in uncertainty for uncertainty in response.uncertainties)
@@ -142,14 +175,19 @@ def test_explicit_freshness_policy_can_support_retraining_recommendation(monkeyp
     monkeypatch.setenv("MODEL_MAX_AGE_DAYS", "30")
     executor, calls = fake_executor()
     response = Orchestrator(executor).chat(COMBINED)
-    assert any("Retraining recommended" in item and "30 days" in item for item in response.recommendations)
+    assert any(
+        "Retraining recommended" in item and "30 days" in item for item in response.recommendations
+    )
     assert not any(name == "airflow_trigger_dag" for name, _ in calls)
 
 
-@pytest.mark.parametrize("message,tool", [
-    ("Trigger the training pipeline", "airflow_trigger_dag"),
-    ("Restart the deployment", "kubernetes_restart_deployment"),
-])
+@pytest.mark.parametrize(
+    "message,tool",
+    [
+        ("Trigger the training pipeline", "airflow_trigger_dag"),
+        ("Restart the deployment", "kubernetes_restart_deployment"),
+    ],
+)
 def test_mutations_require_trusted_explicit_confirmation(message, tool):
     executor, calls = fake_executor()
     denied = Orchestrator(executor).chat(message)
@@ -167,14 +205,17 @@ def test_planner_cannot_self_confirm_through_tool_arguments():
     assert calls == []
 
 
-@pytest.mark.parametrize("exception,status", [
-    (TimeoutError("secret timeout context"), "timeout"),
-    (subprocess.TimeoutExpired("dvc", 1), "timeout"),
-    (httpx.ReadTimeout("secret request URL"), "timeout"),
-    (ConnectionError("token=secret"), "unavailable"),
-    (ValueError("bad arguments with secret"), "invalid"),
-    (PermissionError("not authorized"), "denied"),
-])
+@pytest.mark.parametrize(
+    "exception,status",
+    [
+        (TimeoutError("secret timeout context"), "timeout"),
+        (subprocess.TimeoutExpired("dvc", 1), "timeout"),
+        (httpx.ReadTimeout("secret request URL"), "timeout"),
+        (ConnectionError("token=secret"), "unavailable"),
+        (ValueError("bad arguments with secret"), "invalid"),
+        (PermissionError("not authorized"), "denied"),
+    ],
+)
 def test_executor_has_distinct_failure_envelopes(exception, status):
     executor = ToolExecutor()
 
@@ -221,9 +262,9 @@ def test_tool_input_validation_is_strict_and_rejects_unknown_fields():
 
 def test_unknown_tool_and_malformed_json_do_not_execute():
     executor, calls = fake_executor()
-    response = Orchestrator(executor).chat('tool not_real {}')
+    response = Orchestrator(executor).chat("tool not_real {}")
     assert response.evidence[0].status == "invalid"
-    malformed = Orchestrator(executor).chat('tool mlflow_best_run {bad json}')
+    malformed = Orchestrator(executor).chat("tool mlflow_best_run {bad json}")
     assert malformed.evidence == []
     assert malformed.uncertainties
     assert calls == []
@@ -252,17 +293,47 @@ def test_llm_tool_loop_sends_recorded_evidence_and_ignores_unsupported_prose():
         seen_requests.append(body)
         assert body["store"] is False
         if len(seen_requests) == 1:
-            assert body["input"] == [{"role": "user", "content": "Inspect recent experiment candidates"}]
-            return httpx.Response(200, json={"output": [{"type": "function_call", "call_id": "call1",
-                "name": "mlflow_best_run", "arguments": '{"limit": 5}'}]})
+            assert body["input"] == [
+                {"role": "user", "content": "Inspect recent experiment candidates"}
+            ]
+            return httpx.Response(
+                200,
+                json={
+                    "output": [
+                        {
+                            "type": "function_call",
+                            "call_id": "call1",
+                            "name": "mlflow_best_run",
+                            "arguments": '{"limit": 5}',
+                        }
+                    ]
+                },
+            )
         evidence = json.loads(body["input"][-1]["output"])
         assert evidence["data"]["best_run"]["metrics"]["f1_score"] == 0.93
         assert evidence["status"] == "ok"
-        return httpx.Response(200, json={"output": [{"type": "message", "role": "assistant",
-            "content": [{"type": "output_text", "text": "I invented a perfect metric of 1.0 and all Pods are healthy"}]}]})
+        return httpx.Response(
+            200,
+            json={
+                "output": [
+                    {
+                        "type": "message",
+                        "role": "assistant",
+                        "content": [
+                            {
+                                "type": "output_text",
+                                "text": "I invented a perfect metric of 1.0 and all Pods are healthy",
+                            }
+                        ],
+                    }
+                ]
+            },
+        )
 
     client = httpx.Client(transport=httpx.MockTransport(handler))
-    response = Orchestrator(executor, mode="llm", llm_client=client).chat("Inspect recent experiment candidates")
+    response = Orchestrator(executor, mode="llm", llm_client=client).chat(
+        "Inspect recent experiment candidates"
+    )
     assert len(seen_requests) == 2
     assert calls == [("mlflow_best_run", {"limit": 5})]
     assert "invented a perfect" not in response.model_dump_json()
@@ -277,8 +348,19 @@ def test_llm_cannot_authorize_its_own_mutation():
         nonlocal count
         count += 1
         if count == 1:
-            return httpx.Response(200, json={"output": [{"type": "function_call", "call_id": "call1",
-                "name": "kubernetes_restart_deployment", "arguments": '{"confirmed": true}'}]})
+            return httpx.Response(
+                200,
+                json={
+                    "output": [
+                        {
+                            "type": "function_call",
+                            "call_id": "call1",
+                            "name": "kubernetes_restart_deployment",
+                            "arguments": '{"confirmed": true}',
+                        }
+                    ]
+                },
+            )
         return httpx.Response(200, json={"output": []})
 
     client = httpx.Client(transport=httpx.MockTransport(handler))
@@ -289,7 +371,11 @@ def test_llm_cannot_authorize_its_own_mutation():
 
 def test_failed_llm_does_not_invent_operational_output():
     executor, calls = fake_executor()
-    client = httpx.Client(transport=httpx.MockTransport(lambda request: httpx.Response(503, json={"error": "unavailable"})))
+    client = httpx.Client(
+        transport=httpx.MockTransport(
+            lambda request: httpx.Response(503, json={"error": "unavailable"})
+        )
+    )
     response = Orchestrator(executor, mode="llm", llm_client=client).chat("Inspect the system")
     assert response.evidence == []
     assert response.facts == []
@@ -308,10 +394,26 @@ def test_llm_without_key_reports_unavailable_without_network():
 
 def test_llm_step_limit_preserves_collected_evidence():
     executor, calls = fake_executor()
-    client = httpx.Client(transport=httpx.MockTransport(lambda request: httpx.Response(200, json={"output": [
-        {"type": "function_call", "call_id": "call1", "name": "mlflow_best_run", "arguments": "{}"}
-    ]})))
-    response = Orchestrator(executor, mode="llm", llm_client=client, max_steps=1).chat("Inspect the system")
+    client = httpx.Client(
+        transport=httpx.MockTransport(
+            lambda request: httpx.Response(
+                200,
+                json={
+                    "output": [
+                        {
+                            "type": "function_call",
+                            "call_id": "call1",
+                            "name": "mlflow_best_run",
+                            "arguments": "{}",
+                        }
+                    ]
+                },
+            )
+        )
+    )
+    response = Orchestrator(executor, mode="llm", llm_client=client, max_steps=1).chat(
+        "Inspect the system"
+    )
     assert len(calls) == 1
     assert response.evidence[0].status == "ok"
     assert any("step limit" in item for item in response.uncertainties)

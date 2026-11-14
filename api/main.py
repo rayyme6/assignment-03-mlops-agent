@@ -70,9 +70,20 @@ def create_app(model_path: str | Path | None = None) -> FastAPI:
     def version() -> dict:
         ready()
         metadata = app.state.metadata
-        return {"application_version": os.getenv("APP_VERSION", "1.0.0"),
-                **{key: metadata.get(key) for key in
-                   ("run_id", "model_version", "git_commit", "dvc_hash", "trained_at", "quality_gate")}}
+        return {
+            "application_version": os.getenv("APP_VERSION", "1.0.0"),
+            **{
+                key: metadata.get(key)
+                for key in (
+                    "run_id",
+                    "model_version",
+                    "git_commit",
+                    "dvc_hash",
+                    "trained_at",
+                    "quality_gate",
+                )
+            },
+        }
 
     @app.post("/predict")
     def predict(request: PredictionRequest) -> dict:
@@ -80,8 +91,11 @@ def create_app(model_path: str | Path | None = None) -> FastAPI:
         features = app.state.metadata.get("features")
         frame = pd.DataFrame(request.instances, columns=features)
         predictions = [int(value) for value in app.state.model.predict(frame)]
-        return {"predictions": predictions, "labels": [LABELS[value] for value in predictions],
-                "model_version": app.state.metadata.get("model_version")}
+        return {
+            "predictions": predictions,
+            "labels": [LABELS[value] for value in predictions],
+            "model_version": app.state.metadata.get("model_version"),
+        }
 
     return app
 

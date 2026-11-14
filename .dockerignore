@@ -19,3 +19,5 @@ artifacts/*
 !artifacts/model.joblib
 !artifacts/metadata.json
 data/iris.csv
+.local
+.kube

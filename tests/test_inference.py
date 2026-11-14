@@ -26,10 +26,16 @@ def test_predictions_use_real_model_and_return_run_version(tmp_path):
     model = RandomForestClassifier(n_estimators=5, random_state=42).fit(iris.data, iris.target)
     path = tmp_path / "model.joblib"
     joblib.dump(model, path)
-    (tmp_path / "metadata.json").write_text(json.dumps(
-        {"quality_gate": "passed", "run_id": "real-local-model", "model_version": "real-local-model",
-         "features": list(iris.data.columns)}
-    ))
+    (tmp_path / "metadata.json").write_text(
+        json.dumps(
+            {
+                "quality_gate": "passed",
+                "run_id": "real-local-model",
+                "model_version": "real-local-model",
+                "features": list(iris.data.columns),
+            }
+        )
+    )
     with TestClient(create_app(path)) as client:
         assert client.get("/health/ready").status_code == 200
         result = client.post("/predict", json={"instances": [[5.1, 3.5, 1.4, 0.2]]})
