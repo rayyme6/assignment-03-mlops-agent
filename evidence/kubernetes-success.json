@@ -1,0 +1,1961 @@
+{
+  "kind": "live-observation",
+  "observed_at": "2026-11-14T12:00:10.424506+00:00",
+  "namespace": "mlops",
+  "scope": "Actual assignment03 cluster, readiness and inference through ClusterIP port-forward",
+  "configuration": {
+    "MODEL_PATH": "/app/artifacts/model.joblib"
+  },
+  "deployment_health": {
+    "namespace": "mlops",
+    "deployment": {
+      "name": "prediction-api",
+      "namespace": "mlops",
+      "generation": 5,
+      "observed_generation": 5,
+      "desired_replicas": 2,
+      "ready_replicas": 2,
+      "available_replicas": 2,
+      "updated_replicas": 2,
+      "version": "1.0.0",
+      "model_run_id": "0390ac27a2e2499ba9cd76017c9794b6",
+      "images": [
+        "mlops-prediction:0390ac27a2e2499ba9cd76017c9794b6"
+      ],
+      "conditions": [
+        {
+          "type": "Available",
+          "status": "True",
+          "reason": "MinimumReplicasAvailable",
+          "message": "Deployment has minimum availability."
+        },
+        {
+          "type": "Progressing",
+          "status": "True",
+          "reason": "NewReplicaSetAvailable",
+          "message": "ReplicaSet \"prediction-api-696cb7c7f9\" has successfully progressed."
+        }
+      ]
+    },
+    "healthy": true,
+    "pods": [
+      {
+        "name": "prediction-api-696cb7c7f9-rb9ns",
+        "namespace": "mlops",
+        "labels": {
+          "app": "prediction-api",
+          "app.kubernetes.io/version": "1.0.0",
+          "pod-template-hash": "696cb7c7f9"
+        },
+        "phase": "Running",
+        "reason": null,
+        "message": null,
+        "ready": true,
+        "containers": [
+          {
+            "name": "prediction-api",
+            "ready": true,
+            "restart_count": 0,
+            "waiting_reason": null,
+            "waiting_message": null,
+            "terminated_reason": null,
+            "exit_code": null,
+            "last_termination_reason": null,
+            "image": "docker.io/library/mlops-prediction:0390ac27a2e2499ba9cd76017c9794b6"
+          }
+        ],
+        "conditions": [
+          {
+            "type": "PodReadyToStartContainers",
+            "status": "True",
+            "reason": null,
+            "message": null
+          },
+          {
+            "type": "Initialized",
+            "status": "True",
+            "reason": null,
+            "message": null
+          },
+          {
+            "type": "Ready",
+            "status": "True",
+            "reason": null,
+            "message": null
+          },
+          {
+            "type": "ContainersReady",
+            "status": "True",
+            "reason": null,
+            "message": null
+          },
+          {
+            "type": "PodScheduled",
+            "status": "True",
+            "reason": null,
+            "message": null
+          }
+        ],
+        "restart_count": 0
+      },
+      {
+        "name": "prediction-api-696cb7c7f9-tmqdq",
+        "namespace": "mlops",
+        "labels": {
+          "app": "prediction-api",
+          "app.kubernetes.io/version": "1.0.0",
+          "pod-template-hash": "696cb7c7f9"
+        },
+        "phase": "Running",
+        "reason": null,
+        "message": null,
+        "ready": true,
+        "containers": [
+          {
+            "name": "prediction-api",
+            "ready": true,
+            "restart_count": 0,
+            "waiting_reason": null,
+            "waiting_message": null,
+            "terminated_reason": null,
+            "exit_code": null,
+            "last_termination_reason": null,
+            "image": "docker.io/library/mlops-prediction:0390ac27a2e2499ba9cd76017c9794b6"
+          }
+        ],
+        "conditions": [
+          {
+            "type": "PodReadyToStartContainers",
+            "status": "True",
+            "reason": null,
+            "message": null
+          },
+          {
+            "type": "Initialized",
+            "status": "True",
+            "reason": null,
+            "message": null
+          },
+          {
+            "type": "Ready",
+            "status": "True",
+            "reason": null,
+            "message": null
+          },
+          {
+            "type": "ContainersReady",
+            "status": "True",
+            "reason": null,
+            "message": null
+          },
+          {
+            "type": "PodScheduled",
+            "status": "True",
+            "reason": null,
+            "message": null
+          }
+        ],
+        "restart_count": 0
+      }
+    ],
+    "unhealthy_pods": [],
+    "restart_count": 0,
+    "events": [
+      {
+        "type": "Normal",
+        "reason": "Scheduled",
+        "message": "Successfully assigned mlops/prediction-api-696cb7c7f9-rb9ns to assignment03-control-plane",
+        "count": 1,
+        "resource": "prediction-api-696cb7c7f9-rb9ns",
+        "kind": "Pod",
+        "last_timestamp": "2026-11-14 11:58:48+00:00"
+      },
+      {
+        "type": "Normal",
+        "reason": "Pulled",
+        "message": "Container image \"mlops-prediction:0390ac27a2e2499ba9cd76017c9794b6\" already present on machine and can be accessed by the pod",
+        "count": 1,
+        "resource": "prediction-api-696cb7c7f9-rb9ns",
+        "kind": "Pod",
+        "last_timestamp": "2026-11-14 11:58:48+00:00"
+      },
+      {
+        "type": "Normal",
+        "reason": "Created",
+        "message": "Container created",
+        "count": 1,
+        "resource": "prediction-api-696cb7c7f9-rb9ns",
+        "kind": "Pod",
+        "last_timestamp": "2026-11-14 11:58:48+00:00"
+      },
+      {
+        "type": "Normal",
+        "reason": "Started",
+        "message": "Container started",
+        "count": 1,
+        "resource": "prediction-api-696cb7c7f9-rb9ns",
+        "kind": "Pod",
+        "last_timestamp": "2026-11-14 11:58:49+00:00"
+      },
+      {
+        "type": "Warning",
+        "reason": "Unhealthy",
+        "message": "Startup probe failed: Get \"http://10.244.0.11:8000/health/live\": dial tcp 10.244.0.11:8000: connect: connection refused",
+        "count": 4,
+        "resource": "prediction-api-696cb7c7f9-rb9ns",
+        "kind": "Pod",
+        "last_timestamp": "2026-11-14 11:58:56+00:00"
+      },
+      {
+        "type": "Normal",
+        "reason": "Scheduled",
+        "message": "Successfully assigned mlops/prediction-api-696cb7c7f9-tmqdq to assignment03-control-plane",
+        "count": 1,
+        "resource": "prediction-api-696cb7c7f9-tmqdq",
+        "kind": "Pod",
+        "last_timestamp": "2026-11-14 11:58:58+00:00"
+      },
+      {
+        "type": "Normal",
+        "reason": "Pulled",
+        "message": "Container image \"mlops-prediction:0390ac27a2e2499ba9cd76017c9794b6\" already present on machine and can be accessed by the pod",
+        "count": 1,
+        "resource": "prediction-api-696cb7c7f9-tmqdq",
+        "kind": "Pod",
+        "last_timestamp": "2026-11-14 11:58:59+00:00"
+      },
+      {
+        "type": "Normal",
+        "reason": "Created",
+        "message": "Container created",
+        "count": 1,
+        "resource": "prediction-api-696cb7c7f9-tmqdq",
+        "kind": "Pod",
+        "last_timestamp": "2026-11-14 11:58:59+00:00"
+      },
+      {
+        "type": "Normal",
+        "reason": "Started",
+        "message": "Container started",
+        "count": 1,
+        "resource": "prediction-api-696cb7c7f9-tmqdq",
+        "kind": "Pod",
+        "last_timestamp": "2026-11-14 11:59:00+00:00"
+      },
+      {
+        "type": "Warning",
+        "reason": "Unhealthy",
+        "message": "Startup probe failed: Get \"http://10.244.0.12:8000/health/live\": dial tcp 10.244.0.12:8000: connect: connection refused",
+        "count": 5,
+        "resource": "prediction-api-696cb7c7f9-tmqdq",
+        "kind": "Pod",
+        "last_timestamp": "2026-11-14 11:59:09+00:00"
+      },
+      {
+        "type": "Normal",
+        "reason": "SuccessfulCreate",
+        "message": "Created pod: prediction-api-696cb7c7f9-rb9ns",
+        "count": 1,
+        "resource": "prediction-api-696cb7c7f9",
+        "kind": "ReplicaSet",
+        "last_timestamp": "2026-11-14 11:58:48+00:00"
+      },
+      {
+        "type": "Normal",
+        "reason": "SuccessfulCreate",
+        "message": "Created pod: prediction-api-696cb7c7f9-tmqdq",
+        "count": 1,
+        "resource": "prediction-api-696cb7c7f9",
+        "kind": "ReplicaSet",
+        "last_timestamp": "2026-11-14 11:58:58+00:00"
+      },
+      {
+        "type": "Normal",
+        "reason": "Scheduled",
+        "message": "Successfully assigned mlops/prediction-api-6c7895984c-684zx to assignment03-control-plane",
+        "count": 1,
+        "resource": "prediction-api-6c7895984c-684zx",
+        "kind": "Pod",
+        "last_timestamp": "2026-11-14 09:22:54+00:00"
+      },
+      {
+        "type": "Normal",
+        "reason": "Pulled",
+        "message": "Container image \"mlops-prediction:0390ac27a2e2499ba9cd76017c9794b6\" already present on machine and can be accessed by the pod",
+        "count": 2,
+        "resource": "prediction-api-6c7895984c-684zx",
+        "kind": "Pod",
+        "last_timestamp": "2026-11-14 09:24:21+00:00"
+      },
+      {
+        "type": "Normal",
+        "reason": "Created",
+        "message": "Container created",
+        "count": 2,
+        "resource": "prediction-api-6c7895984c-684zx",
+        "kind": "Pod",
+        "last_timestamp": "2026-11-14 09:24:22+00:00"
+      },
+      {
+        "type": "Normal",
+        "reason": "Started",
+        "message": "Container started",
+        "count": 2,
+        "resource": "prediction-api-6c7895984c-684zx",
+        "kind": "Pod",
+        "last_timestamp": "2026-11-14 09:24:29+00:00"
+      },
+      {
+        "type": "Warning",
+        "reason": "Unhealthy",
+        "message": "Startup probe failed: Get \"http://10.244.0.5:8000/health/live\": dial tcp 10.244.0.5:8000: connect: connection refused",
+        "count": 25,
+        "resource": "prediction-api-6c7895984c-684zx",
+        "kind": "Pod",
+        "last_timestamp": "2026-11-14 09:23:53+00:00"
+      },
+      {
+        "type": "Normal",
+        "reason": "Killing",
+        "message": "Container prediction-api failed startup probe, will be restarted",
+        "count": 1,
+        "resource": "prediction-api-6c7895984c-684zx",
+        "kind": "Pod",
+        "last_timestamp": "2026-11-14 09:24:04+00:00"
+      },
+      {
+        "type": "Normal",
+        "reason": "SandboxChanged",
+        "message": "Pod sandbox changed, it will be killed and re-created.",
+        "count": 1,
+        "resource": "prediction-api-6c7895984c-684zx",
+        "kind": "Pod",
+        "last_timestamp": "2026-11-14 11:45:12+00:00"
+      },
+      {
+        "type": "Normal",
+        "reason": "Pulled",
+        "message": "Container image \"mlops-prediction:0390ac27a2e2499ba9cd76017c9794b6\" already present on machine and can be accessed by the pod",
+        "count": 1,
+        "resource": "prediction-api-6c7895984c-684zx",
+        "kind": "Pod",
+        "last_timestamp": "2026-11-14 11:45:19+00:00"
+      },
+      {
+        "type": "Normal",
+        "reason": "Created",
+        "message": "Container created",
+        "count": 1,
+        "resource": "prediction-api-6c7895984c-684zx",
+        "kind": "Pod",
+        "last_timestamp": "2026-11-14 11:45:20+00:00"
+      },
+      {
+        "type": "Normal",
+        "reason": "Started",
+        "message": "Container started",
+        "count": 1,
+        "resource": "prediction-api-6c7895984c-684zx",
+        "kind": "Pod",
+        "last_timestamp": "2026-11-14 11:45:23+00:00"
+      },
+      {
+        "type": "Warning",
+        "reason": "Unhealthy",
+        "message": "Startup probe failed: Get \"http://10.244.0.2:8000/health/live\": dial tcp 10.244.0.2:8000: connect: connection refused",
+        "count": 10,
+        "resource": "prediction-api-6c7895984c-684zx",
+        "kind": "Pod",
+        "last_timestamp": "2026-11-14 11:45:42+00:00"
+      },
+      {
+        "type": "Normal",
+        "reason": "Killing",
+        "message": "Stopping container prediction-api",
+        "count": 1,
+        "resource": "prediction-api-6c7895984c-684zx",
+        "kind": "Pod",
+        "last_timestamp": "2026-11-14 11:57:12+00:00"
+      },
+      {
+        "type": "Normal",
+        "reason": "Scheduled",
+        "message": "Successfully assigned mlops/prediction-api-6c7895984c-6qncz to assignment03-control-plane",
+        "count": 1,
+        "resource": "prediction-api-6c7895984c-6qncz",
+        "kind": "Pod",
+        "last_timestamp": "2026-11-14 09:22:54+00:00"
+      },
+      {
+        "type": "Normal",
+        "reason": "Pulled",
+        "message": "Container image \"mlops-prediction:0390ac27a2e2499ba9cd76017c9794b6\" already present on machine and can be accessed by the pod",
+        "count": 2,
+        "resource": "prediction-api-6c7895984c-6qncz",
+        "kind": "Pod",
+        "last_timestamp": "2026-11-14 09:24:21+00:00"
+      },
+      {
+        "type": "Normal",
+        "reason": "Created",
+        "message": "Container created",
+        "count": 2,
+        "resource": "prediction-api-6c7895984c-6qncz",
+        "kind": "Pod",
+        "last_timestamp": "2026-11-14 09:24:22+00:00"
+      },
+      {
+        "type": "Normal",
+        "reason": "Started",
+        "message": "Container started",
+        "count": 1,
+        "resource": "prediction-api-6c7895984c-6qncz",
+        "kind": "Pod",
+        "last_timestamp": "2026-11-14 09:23:05+00:00"
+      },
+      {
+        "type": "Warning",
+        "reason": "Unhealthy",
+        "message": "Startup probe failed: Get \"http://10.244.0.6:8000/health/live\": dial tcp 10.244.0.6:8000: connect: connection refused",
+        "count": 25,
+        "resource": "prediction-api-6c7895984c-6qncz",
+        "kind": "Pod",
+        "last_timestamp": "2026-11-14 09:23:53+00:00"
+      },
+      {
+        "type": "Normal",
+        "reason": "Killing",
+        "message": "Container prediction-api failed startup probe, will be restarted",
+        "count": 1,
+        "resource": "prediction-api-6c7895984c-6qncz",
+        "kind": "Pod",
+        "last_timestamp": "2026-11-14 09:24:05+00:00"
+      },
+      {
+        "type": "Normal",
+        "reason": "SandboxChanged",
+        "message": "Pod sandbox changed, it will be killed and re-created.",
+        "count": 1,
+        "resource": "prediction-api-6c7895984c-6qncz",
+        "kind": "Pod",
+        "last_timestamp": "2026-11-14 11:45:13+00:00"
+      },
+      {
+        "type": "Normal",
+        "reason": "Pulled",
+        "message": "Container image \"mlops-prediction:0390ac27a2e2499ba9cd76017c9794b6\" already present on machine and can be accessed by the pod",
+        "count": 1,
+        "resource": "prediction-api-6c7895984c-6qncz",
+        "kind": "Pod",
+        "last_timestamp": "2026-11-14 11:45:22+00:00"
+      },
+      {
+        "type": "Normal",
+        "reason": "Created",
+        "message": "Container created",
+        "count": 1,
+        "resource": "prediction-api-6c7895984c-6qncz",
+        "kind": "Pod",
+        "last_timestamp": "2026-11-14 11:45:22+00:00"
+      },
+      {
+        "type": "Normal",
+        "reason": "Started",
+        "message": "Container started",
+        "count": 1,
+        "resource": "prediction-api-6c7895984c-6qncz",
+        "kind": "Pod",
+        "last_timestamp": "2026-11-14 11:45:24+00:00"
+      },
+      {
+        "type": "Warning",
+        "reason": "Unhealthy",
+        "message": "Startup probe failed: Get \"http://10.244.0.6:8000/health/live\": dial tcp 10.244.0.6:8000: connect: connection refused",
+        "count": 9,
+        "resource": "prediction-api-6c7895984c-6qncz",
+        "kind": "Pod",
+        "last_timestamp": "2026-11-14 11:45:41+00:00"
+      },
+      {
+        "type": "Normal",
+        "reason": "Killing",
+        "message": "Stopping container prediction-api",
+        "count": 1,
+        "resource": "prediction-api-6c7895984c-6qncz",
+        "kind": "Pod",
+        "last_timestamp": "2026-11-14 11:57:23+00:00"
+      },
+      {
+        "type": "Normal",
+        "reason": "SuccessfulCreate",
+        "message": "Created pod: prediction-api-6c7895984c-6qncz",
+        "count": 1,
+        "resource": "prediction-api-6c7895984c",
+        "kind": "ReplicaSet",
+        "last_timestamp": "2026-11-14 09:22:54+00:00"
+      },
+      {
+        "type": "Normal",
+        "reason": "SuccessfulCreate",
+        "message": "Created pod: prediction-api-6c7895984c-684zx",
+        "count": 1,
+        "resource": "prediction-api-6c7895984c",
+        "kind": "ReplicaSet",
+        "last_timestamp": "2026-11-14 09:22:54+00:00"
+      },
+      {
+        "type": "Normal",
+        "reason": "SuccessfulDelete",
+        "message": "Deleted pod: prediction-api-6c7895984c-684zx",
+        "count": 1,
+        "resource": "prediction-api-6c7895984c",
+        "kind": "ReplicaSet",
+        "last_timestamp": "2026-11-14 11:57:12+00:00"
+      },
+      {
+        "type": "Normal",
+        "reason": "SuccessfulDelete",
+        "message": "Deleted pod: prediction-api-6c7895984c-6qncz",
+        "count": 1,
+        "resource": "prediction-api-6c7895984c",
+        "kind": "ReplicaSet",
+        "last_timestamp": "2026-11-14 11:57:23+00:00"
+      },
+      {
+        "type": "Normal",
+        "reason": "Scheduled",
+        "message": "Successfully assigned mlops/prediction-api-74bb78dc4f-tlfmw to assignment03-control-plane",
+        "count": 1,
+        "resource": "prediction-api-74bb78dc4f-tlfmw",
+        "kind": "Pod",
+        "last_timestamp": "2026-11-14 11:58:38+00:00"
+      },
+      {
+        "type": "Normal",
+        "reason": "Pulled",
+        "message": "Container image \"mlops-prediction:0390ac27a2e2499ba9cd76017c9794b6\" already present on machine and can be accessed by the pod",
+        "count": 1,
+        "resource": "prediction-api-74bb78dc4f-tlfmw",
+        "kind": "Pod",
+        "last_timestamp": "2026-11-14 11:58:39+00:00"
+      },
+      {
+        "type": "Normal",
+        "reason": "Created",
+        "message": "Container created",
+        "count": 1,
+        "resource": "prediction-api-74bb78dc4f-tlfmw",
+        "kind": "Pod",
+        "last_timestamp": "2026-11-14 11:58:39+00:00"
+      },
+      {
+        "type": "Normal",
+        "reason": "Started",
+        "message": "Container started",
+        "count": 1,
+        "resource": "prediction-api-74bb78dc4f-tlfmw",
+        "kind": "Pod",
+        "last_timestamp": "2026-11-14 11:58:39+00:00"
+      },
+      {
+        "type": "Warning",
+        "reason": "Unhealthy",
+        "message": "Startup probe failed: Get \"http://10.244.0.10:8000/health/live\": dial tcp 10.244.0.10:8000: connect: connection refused",
+        "count": 2,
+        "resource": "prediction-api-74bb78dc4f-tlfmw",
+        "kind": "Pod",
+        "last_timestamp": "2026-11-14 11:58:43+00:00"
+      },
+      {
+        "type": "Warning",
+        "reason": "Unhealthy",
+        "message": "Readiness probe failed: HTTP probe failed with statuscode: 503",
+        "count": 2,
+        "resource": "prediction-api-74bb78dc4f-tlfmw",
+        "kind": "Pod",
+        "last_timestamp": "2026-11-14 11:58:47+00:00"
+      },
+      {
+        "type": "Normal",
+        "reason": "Killing",
+        "message": "Stopping container prediction-api",
+        "count": 1,
+        "resource": "prediction-api-74bb78dc4f-tlfmw",
+        "kind": "Pod",
+        "last_timestamp": "2026-11-14 11:58:47+00:00"
+      },
+      {
+        "type": "Normal",
+        "reason": "SuccessfulCreate",
+        "message": "Created pod: prediction-api-74bb78dc4f-tlfmw",
+        "count": 1,
+        "resource": "prediction-api-74bb78dc4f",
+        "kind": "ReplicaSet",
+        "last_timestamp": "2026-11-14 11:58:38+00:00"
+      },
+      {
+        "type": "Normal",
+        "reason": "SuccessfulDelete",
+        "message": "Deleted pod: prediction-api-74bb78dc4f-tlfmw",
+        "count": 1,
+        "resource": "prediction-api-74bb78dc4f",
+        "kind": "ReplicaSet",
+        "last_timestamp": "2026-11-14 11:58:47+00:00"
+      },
+      {
+        "type": "Normal",
+        "reason": "Scheduled",
+        "message": "Successfully assigned mlops/prediction-api-795c65996-mz66t to assignment03-control-plane",
+        "count": 1,
+        "resource": "prediction-api-795c65996-mz66t",
+        "kind": "Pod",
+        "last_timestamp": "2026-11-14 11:56:57+00:00"
+      },
+      {
+        "type": "Normal",
+        "reason": "Pulled",
+        "message": "Container image \"mlops-prediction:0390ac27a2e2499ba9cd76017c9794b6\" already present on machine and can be accessed by the pod",
+        "count": 1,
+        "resource": "prediction-api-795c65996-mz66t",
+        "kind": "Pod",
+        "last_timestamp": "2026-11-14 11:56:58+00:00"
+      },
+      {
+        "type": "Normal",
+        "reason": "Created",
+        "message": "Container created",
+        "count": 1,
+        "resource": "prediction-api-795c65996-mz66t",
+        "kind": "Pod",
+        "last_timestamp": "2026-11-14 11:56:58+00:00"
+      },
+      {
+        "type": "Normal",
+        "reason": "Started",
+        "message": "Container started",
+        "count": 1,
+        "resource": "prediction-api-795c65996-mz66t",
+        "kind": "Pod",
+        "last_timestamp": "2026-11-14 11:56:59+00:00"
+      },
+      {
+        "type": "Warning",
+        "reason": "Unhealthy",
+        "message": "Startup probe failed: Get \"http://10.244.0.8:8000/health/live\": dial tcp 10.244.0.8:8000: connect: connection refused",
+        "count": 6,
+        "resource": "prediction-api-795c65996-mz66t",
+        "kind": "Pod",
+        "last_timestamp": "2026-11-14 11:57:10+00:00"
+      },
+      {
+        "type": "Normal",
+        "reason": "Killing",
+        "message": "Stopping container prediction-api",
+        "count": 1,
+        "resource": "prediction-api-795c65996-mz66t",
+        "kind": "Pod",
+        "last_timestamp": "2026-11-14 11:58:58+00:00"
+      },
+      {
+        "type": "Normal",
+        "reason": "Scheduled",
+        "message": "Successfully assigned mlops/prediction-api-795c65996-ws9sb to assignment03-control-plane",
+        "count": 1,
+        "resource": "prediction-api-795c65996-ws9sb",
+        "kind": "Pod",
+        "last_timestamp": "2026-11-14 11:57:12+00:00"
+      },
+      {
+        "type": "Normal",
+        "reason": "Pulled",
+        "message": "Container image \"mlops-prediction:0390ac27a2e2499ba9cd76017c9794b6\" already present on machine and can be accessed by the pod",
+        "count": 1,
+        "resource": "prediction-api-795c65996-ws9sb",
+        "kind": "Pod",
+        "last_timestamp": "2026-11-14 11:57:13+00:00"
+      },
+      {
+        "type": "Normal",
+        "reason": "Created",
+        "message": "Container created",
+        "count": 1,
+        "resource": "prediction-api-795c65996-ws9sb",
+        "kind": "Pod",
+        "last_timestamp": "2026-11-14 11:57:13+00:00"
+      },
+      {
+        "type": "Normal",
+        "reason": "Started",
+        "message": "Container started",
+        "count": 1,
+        "resource": "prediction-api-795c65996-ws9sb",
+        "kind": "Pod",
+        "last_timestamp": "2026-11-14 11:57:14+00:00"
+      },
+      {
+        "type": "Warning",
+        "reason": "Unhealthy",
+        "message": "Startup probe failed: Get \"http://10.244.0.9:8000/health/live\": dial tcp 10.244.0.9:8000: connect: connection refused",
+        "count": 4,
+        "resource": "prediction-api-795c65996-ws9sb",
+        "kind": "Pod",
+        "last_timestamp": "2026-11-14 11:57:20+00:00"
+      },
+      {
+        "type": "Normal",
+        "reason": "Killing",
+        "message": "Stopping container prediction-api",
+        "count": 1,
+        "resource": "prediction-api-795c65996-ws9sb",
+        "kind": "Pod",
+        "last_timestamp": "2026-11-14 11:59:11+00:00"
+      },
+      {
+        "type": "Warning",
+        "reason": "Unhealthy",
+        "message": "Readiness probe failed: Get \"http://10.244.0.9:8000/health/ready\": dial tcp 10.244.0.9:8000: connect: connection refused",
+        "count": 1,
+        "resource": "prediction-api-795c65996-ws9sb",
+        "kind": "Pod",
+        "last_timestamp": "2026-11-14 11:59:13+00:00"
+      },
+      {
+        "type": "Normal",
+        "reason": "SuccessfulCreate",
+        "message": "Created pod: prediction-api-795c65996-mz66t",
+        "count": 1,
+        "resource": "prediction-api-795c65996",
+        "kind": "ReplicaSet",
+        "last_timestamp": "2026-11-14 11:56:57+00:00"
+      },
+      {
+        "type": "Normal",
+        "reason": "SuccessfulCreate",
+        "message": "Created pod: prediction-api-795c65996-ws9sb",
+        "count": 1,
+        "resource": "prediction-api-795c65996",
+        "kind": "ReplicaSet",
+        "last_timestamp": "2026-11-14 11:57:12+00:00"
+      },
+      {
+        "type": "Normal",
+        "reason": "SuccessfulDelete",
+        "message": "Deleted pod: prediction-api-795c65996-mz66t",
+        "count": 1,
+        "resource": "prediction-api-795c65996",
+        "kind": "ReplicaSet",
+        "last_timestamp": "2026-11-14 11:58:58+00:00"
+      },
+      {
+        "type": "Normal",
+        "reason": "SuccessfulDelete",
+        "message": "Deleted pod: prediction-api-795c65996-ws9sb",
+        "count": 1,
+        "resource": "prediction-api-795c65996",
+        "kind": "ReplicaSet",
+        "last_timestamp": "2026-11-14 11:59:11+00:00"
+      },
+      {
+        "type": "Normal",
+        "reason": "Scheduled",
+        "message": "Successfully assigned mlops/prediction-api-bc967df94-mgmb9 to assignment03-control-plane",
+        "count": 1,
+        "resource": "prediction-api-bc967df94-mgmb9",
+        "kind": "Pod",
+        "last_timestamp": "2026-11-14 11:56:34+00:00"
+      },
+      {
+        "type": "Normal",
+        "reason": "Pulled",
+        "message": "Container image \"mlops-prediction:0390ac27a2e2499ba9cd76017c9794b6\" already present on machine and can be accessed by the pod",
+        "count": 1,
+        "resource": "prediction-api-bc967df94-mgmb9",
+        "kind": "Pod",
+        "last_timestamp": "2026-11-14 11:56:35+00:00"
+      },
+      {
+        "type": "Normal",
+        "reason": "Created",
+        "message": "Container created",
+        "count": 1,
+        "resource": "prediction-api-bc967df94-mgmb9",
+        "kind": "Pod",
+        "last_timestamp": "2026-11-14 11:56:35+00:00"
+      },
+      {
+        "type": "Normal",
+        "reason": "Started",
+        "message": "Container started",
+        "count": 1,
+        "resource": "prediction-api-bc967df94-mgmb9",
+        "kind": "Pod",
+        "last_timestamp": "2026-11-14 11:56:36+00:00"
+      },
+      {
+        "type": "Warning",
+        "reason": "Unhealthy",
+        "message": "Startup probe failed: Get \"http://10.244.0.7:8000/health/live\": dial tcp 10.244.0.7:8000: connect: connection refused",
+        "count": 3,
+        "resource": "prediction-api-bc967df94-mgmb9",
+        "kind": "Pod",
+        "last_timestamp": "2026-11-14 11:56:40+00:00"
+      },
+      {
+        "type": "Warning",
+        "reason": "Unhealthy",
+        "message": "Readiness probe failed: HTTP probe failed with statuscode: 503",
+        "count": 4,
+        "resource": "prediction-api-bc967df94-mgmb9",
+        "kind": "Pod",
+        "last_timestamp": "2026-11-14 11:56:57+00:00"
+      },
+      {
+        "type": "Normal",
+        "reason": "Killing",
+        "message": "Stopping container prediction-api",
+        "count": 1,
+        "resource": "prediction-api-bc967df94-mgmb9",
+        "kind": "Pod",
+        "last_timestamp": "2026-11-14 11:56:57+00:00"
+      },
+      {
+        "type": "Normal",
+        "reason": "SuccessfulCreate",
+        "message": "Created pod: prediction-api-bc967df94-mgmb9",
+        "count": 1,
+        "resource": "prediction-api-bc967df94",
+        "kind": "ReplicaSet",
+        "last_timestamp": "2026-11-14 11:56:34+00:00"
+      },
+      {
+        "type": "Normal",
+        "reason": "SuccessfulDelete",
+        "message": "Deleted pod: prediction-api-bc967df94-mgmb9",
+        "count": 1,
+        "resource": "prediction-api-bc967df94",
+        "kind": "ReplicaSet",
+        "last_timestamp": "2026-11-14 11:56:57+00:00"
+      },
+      {
+        "type": "Normal",
+        "reason": "ScalingReplicaSet",
+        "message": "Scaled up replica set prediction-api-6c7895984c from 0 to 2",
+        "count": 1,
+        "resource": "prediction-api",
+        "kind": "Deployment",
+        "last_timestamp": "2026-11-14 09:22:54+00:00"
+      },
+      {
+        "type": "Normal",
+        "reason": "ScalingReplicaSet",
+        "message": "Scaled up replica set prediction-api-bc967df94 from 0 to 1",
+        "count": 1,
+        "resource": "prediction-api",
+        "kind": "Deployment",
+        "last_timestamp": "2026-11-14 11:56:33+00:00"
+      },
+      {
+        "type": "Normal",
+        "reason": "ScalingReplicaSet",
+        "message": "Scaled down replica set prediction-api-bc967df94 from 1 to 0",
+        "count": 1,
+        "resource": "prediction-api",
+        "kind": "Deployment",
+        "last_timestamp": "2026-11-14 11:56:57+00:00"
+      },
+      {
+        "type": "Normal",
+        "reason": "ScalingReplicaSet",
+        "message": "Scaled up replica set prediction-api-795c65996 from 0 to 1",
+        "count": 1,
+        "resource": "prediction-api",
+        "kind": "Deployment",
+        "last_timestamp": "2026-11-14 11:56:57+00:00"
+      },
+      {
+        "type": "Normal",
+        "reason": "ScalingReplicaSet",
+        "message": "Scaled down replica set prediction-api-6c7895984c from 2 to 1",
+        "count": 1,
+        "resource": "prediction-api",
+        "kind": "Deployment",
+        "last_timestamp": "2026-11-14 11:57:12+00:00"
+      },
+      {
+        "type": "Normal",
+        "reason": "ScalingReplicaSet",
+        "message": "Scaled up replica set prediction-api-795c65996 from 1 to 2",
+        "count": 1,
+        "resource": "prediction-api",
+        "kind": "Deployment",
+        "last_timestamp": "2026-11-14 11:57:12+00:00"
+      },
+      {
+        "type": "Normal",
+        "reason": "ScalingReplicaSet",
+        "message": "Scaled down replica set prediction-api-6c7895984c from 1 to 0",
+        "count": 1,
+        "resource": "prediction-api",
+        "kind": "Deployment",
+        "last_timestamp": "2026-11-14 11:57:23+00:00"
+      },
+      {
+        "type": "Normal",
+        "reason": "ScalingReplicaSet",
+        "message": "Scaled up replica set prediction-api-74bb78dc4f from 0 to 1",
+        "count": 1,
+        "resource": "prediction-api",
+        "kind": "Deployment",
+        "last_timestamp": "2026-11-14 11:58:38+00:00"
+      },
+      {
+        "type": "Normal",
+        "reason": "ScalingReplicaSet",
+        "message": "Scaled down replica set prediction-api-74bb78dc4f from 1 to 0",
+        "count": 1,
+        "resource": "prediction-api",
+        "kind": "Deployment",
+        "last_timestamp": "2026-11-14 11:58:47+00:00"
+      },
+      {
+        "type": "Normal",
+        "reason": "ScalingReplicaSet",
+        "message": "Scaled up replica set prediction-api-696cb7c7f9 from 0 to 1",
+        "count": 1,
+        "resource": "prediction-api",
+        "kind": "Deployment",
+        "last_timestamp": "2026-11-14 11:58:48+00:00"
+      },
+      {
+        "type": "Normal",
+        "reason": "ScalingReplicaSet",
+        "message": "(combined from similar events): Scaled down replica set prediction-api-795c65996 from 1 to 0",
+        "count": 3,
+        "resource": "prediction-api",
+        "kind": "Deployment",
+        "last_timestamp": "2026-11-14 11:59:11+00:00"
+      }
+    ],
+    "health_scope": "Deployment readiness and rollout; end-to-end prediction is not probed."
+  },
+  "http": {
+    "liveness": {
+      "status_code": 200,
+      "body": {
+        "status": "alive"
+      }
+    },
+    "readiness": {
+      "status_code": 200,
+      "body": {
+        "status": "ready",
+        "run_id": "0390ac27a2e2499ba9cd76017c9794b6"
+      }
+    },
+    "version": {
+      "status_code": 200,
+      "body": {
+        "application_version": "1.0.0",
+        "run_id": "0390ac27a2e2499ba9cd76017c9794b6",
+        "model_version": "0390ac27a2e2499ba9cd76017c9794b6",
+        "git_commit": "a4395b2006d3b46ebd92aff16bf9259dc5570c14",
+        "dvc_hash": "4d301abed5efe50eccda350cde38e0eb",
+        "trained_at": "2026-11-14T09:11:08.949428+00:00",
+        "quality_gate": "passed"
+      }
+    },
+    "prediction": {
+      "status_code": 200,
+      "body": {
+        "predictions": [
+          0
+        ],
+        "labels": [
+          "setosa"
+        ],
+        "model_version": "0390ac27a2e2499ba9cd76017c9794b6"
+      }
+    }
+  },
+  "conversation": {
+    "request_id": "1dc418da738a48b3a90882a1ae6dccfd",
+    "planner": "rules",
+    "facts": [
+      "[2681a15ffb7b] kubernetes_deployment_health returned recorded evidence (see data).",
+      "[2681a15ffb7b] Deployment health=True; scope: Deployment readiness and rollout; end-to-end prediction is not probed..",
+      "[646ff19208fd] kubernetes_list_services returned recorded evidence (see data)."
+    ],
+    "uncertainties": [],
+    "recommendations": [],
+    "evidence": [
+      {
+        "evidence_id": "2681a15ffb7b",
+        "tool": "kubernetes_deployment_health",
+        "status": "ok",
+        "data": {
+          "namespace": "mlops",
+          "deployment": {
+            "name": "prediction-api",
+            "namespace": "mlops",
+            "generation": 5,
+            "observed_generation": 5,
+            "desired_replicas": 2,
+            "ready_replicas": 2,
+            "available_replicas": 2,
+            "updated_replicas": 2,
+            "version": "1.0.0",
+            "model_run_id": "0390ac27a2e2499ba9cd76017c9794b6",
+            "images": [
+              "mlops-prediction:0390ac27a2e2499ba9cd76017c9794b6"
+            ],
+            "conditions": [
+              {
+                "type": "Available",
+                "status": "True",
+                "reason": "MinimumReplicasAvailable",
+                "message": "Deployment has minimum availability."
+              },
+              {
+                "type": "Progressing",
+                "status": "True",
+                "reason": "NewReplicaSetAvailable",
+                "message": "ReplicaSet \"prediction-api-696cb7c7f9\" has successfully progressed."
+              }
+            ]
+          },
+          "healthy": true,
+          "pods": [
+            {
+              "name": "prediction-api-696cb7c7f9-rb9ns",
+              "namespace": "mlops",
+              "labels": {
+                "app": "prediction-api",
+                "app.kubernetes.io/version": "1.0.0",
+                "pod-template-hash": "696cb7c7f9"
+              },
+              "phase": "Running",
+              "reason": null,
+              "message": null,
+              "ready": true,
+              "containers": [
+                {
+                  "name": "prediction-api",
+                  "ready": true,
+                  "restart_count": 0,
+                  "waiting_reason": null,
+                  "waiting_message": null,
+                  "terminated_reason": null,
+                  "exit_code": null,
+                  "last_termination_reason": null,
+                  "image": "docker.io/library/mlops-prediction:0390ac27a2e2499ba9cd76017c9794b6"
+                }
+              ],
+              "conditions": [
+                {
+                  "type": "PodReadyToStartContainers",
+                  "status": "True",
+                  "reason": null,
+                  "message": null
+                },
+                {
+                  "type": "Initialized",
+                  "status": "True",
+                  "reason": null,
+                  "message": null
+                },
+                {
+                  "type": "Ready",
+                  "status": "True",
+                  "reason": null,
+                  "message": null
+                },
+                {
+                  "type": "ContainersReady",
+                  "status": "True",
+                  "reason": null,
+                  "message": null
+                },
+                {
+                  "type": "PodScheduled",
+                  "status": "True",
+                  "reason": null,
+                  "message": null
+                }
+              ],
+              "restart_count": 0
+            },
+            {
+              "name": "prediction-api-696cb7c7f9-tmqdq",
+              "namespace": "mlops",
+              "labels": {
+                "app": "prediction-api",
+                "app.kubernetes.io/version": "1.0.0",
+                "pod-template-hash": "696cb7c7f9"
+              },
+              "phase": "Running",
+              "reason": null,
+              "message": null,
+              "ready": true,
+              "containers": [
+                {
+                  "name": "prediction-api",
+                  "ready": true,
+                  "restart_count": 0,
+                  "waiting_reason": null,
+                  "waiting_message": null,
+                  "terminated_reason": null,
+                  "exit_code": null,
+                  "last_termination_reason": null,
+                  "image": "docker.io/library/mlops-prediction:0390ac27a2e2499ba9cd76017c9794b6"
+                }
+              ],
+              "conditions": [
+                {
+                  "type": "PodReadyToStartContainers",
+                  "status": "True",
+                  "reason": null,
+                  "message": null
+                },
+                {
+                  "type": "Initialized",
+                  "status": "True",
+                  "reason": null,
+                  "message": null
+                },
+                {
+                  "type": "Ready",
+                  "status": "True",
+                  "reason": null,
+                  "message": null
+                },
+                {
+                  "type": "ContainersReady",
+                  "status": "True",
+                  "reason": null,
+                  "message": null
+                },
+                {
+                  "type": "PodScheduled",
+                  "status": "True",
+                  "reason": null,
+                  "message": null
+                }
+              ],
+              "restart_count": 0
+            }
+          ],
+          "unhealthy_pods": [],
+          "restart_count": 0,
+          "events": [
+            {
+              "type": "Normal",
+              "reason": "Scheduled",
+              "message": "Successfully assigned mlops/prediction-api-696cb7c7f9-rb9ns to assignment03-control-plane",
+              "count": 1,
+              "resource": "prediction-api-696cb7c7f9-rb9ns",
+              "kind": "Pod",
+              "last_timestamp": "2026-11-14 11:58:48+00:00"
+            },
+            {
+              "type": "Normal",
+              "reason": "Pulled",
+              "message": "Container image \"mlops-prediction:0390ac27a2e2499ba9cd76017c9794b6\" already present on machine and can be accessed by the pod",
+              "count": 1,
+              "resource": "prediction-api-696cb7c7f9-rb9ns",
+              "kind": "Pod",
+              "last_timestamp": "2026-11-14 11:58:48+00:00"
+            },
+            {
+              "type": "Normal",
+              "reason": "Created",
+              "message": "Container created",
+              "count": 1,
+              "resource": "prediction-api-696cb7c7f9-rb9ns",
+              "kind": "Pod",
+              "last_timestamp": "2026-11-14 11:58:48+00:00"
+            },
+            {
+              "type": "Normal",
+              "reason": "Started",
+              "message": "Container started",
+              "count": 1,
+              "resource": "prediction-api-696cb7c7f9-rb9ns",
+              "kind": "Pod",
+              "last_timestamp": "2026-11-14 11:58:49+00:00"
+            },
+            {
+              "type": "Warning",
+              "reason": "Unhealthy",
+              "message": "Startup probe failed: Get \"http://10.244.0.11:8000/health/live\": dial tcp 10.244.0.11:8000: connect: connection refused",
+              "count": 4,
+              "resource": "prediction-api-696cb7c7f9-rb9ns",
+              "kind": "Pod",
+              "last_timestamp": "2026-11-14 11:58:56+00:00"
+            },
+            {
+              "type": "Normal",
+              "reason": "Scheduled",
+              "message": "Successfully assigned mlops/prediction-api-696cb7c7f9-tmqdq to assignment03-control-plane",
+              "count": 1,
+              "resource": "prediction-api-696cb7c7f9-tmqdq",
+              "kind": "Pod",
+              "last_timestamp": "2026-11-14 11:58:58+00:00"
+            },
+            {
+              "type": "Normal",
+              "reason": "Pulled",
+              "message": "Container image \"mlops-prediction:0390ac27a2e2499ba9cd76017c9794b6\" already present on machine and can be accessed by the pod",
+              "count": 1,
+              "resource": "prediction-api-696cb7c7f9-tmqdq",
+              "kind": "Pod",
+              "last_timestamp": "2026-11-14 11:58:59+00:00"
+            },
+            {
+              "type": "Normal",
+              "reason": "Created",
+              "message": "Container created",
+              "count": 1,
+              "resource": "prediction-api-696cb7c7f9-tmqdq",
+              "kind": "Pod",
+              "last_timestamp": "2026-11-14 11:58:59+00:00"
+            },
+            {
+              "type": "Normal",
+              "reason": "Started",
+              "message": "Container started",
+              "count": 1,
+              "resource": "prediction-api-696cb7c7f9-tmqdq",
+              "kind": "Pod",
+              "last_timestamp": "2026-11-14 11:59:00+00:00"
+            },
+            {
+              "type": "Warning",
+              "reason": "Unhealthy",
+              "message": "Startup probe failed: Get \"http://10.244.0.12:8000/health/live\": dial tcp 10.244.0.12:8000: connect: connection refused",
+              "count": 5,
+              "resource": "prediction-api-696cb7c7f9-tmqdq",
+              "kind": "Pod",
+              "last_timestamp": "2026-11-14 11:59:09+00:00"
+            },
+            {
+              "type": "Normal",
+              "reason": "SuccessfulCreate",
+              "message": "Created pod: prediction-api-696cb7c7f9-rb9ns",
+              "count": 1,
+              "resource": "prediction-api-696cb7c7f9",
+              "kind": "ReplicaSet",
+              "last_timestamp": "2026-11-14 11:58:48+00:00"
+            },
+            {
+              "type": "Normal",
+              "reason": "SuccessfulCreate",
+              "message": "Created pod: prediction-api-696cb7c7f9-tmqdq",
+              "count": 1,
+              "resource": "prediction-api-696cb7c7f9",
+              "kind": "ReplicaSet",
+              "last_timestamp": "2026-11-14 11:58:58+00:00"
+            },
+            {
+              "type": "Normal",
+              "reason": "Scheduled",
+              "message": "Successfully assigned mlops/prediction-api-6c7895984c-684zx to assignment03-control-plane",
+              "count": 1,
+              "resource": "prediction-api-6c7895984c-684zx",
+              "kind": "Pod",
+              "last_timestamp": "2026-11-14 09:22:54+00:00"
+            },
+            {
+              "type": "Normal",
+              "reason": "Pulled",
+              "message": "Container image \"mlops-prediction:0390ac27a2e2499ba9cd76017c9794b6\" already present on machine and can be accessed by the pod",
+              "count": 2,
+              "resource": "prediction-api-6c7895984c-684zx",
+              "kind": "Pod",
+              "last_timestamp": "2026-11-14 09:24:21+00:00"
+            },
+            {
+              "type": "Normal",
+              "reason": "Created",
+              "message": "Container created",
+              "count": 2,
+              "resource": "prediction-api-6c7895984c-684zx",
+              "kind": "Pod",
+              "last_timestamp": "2026-11-14 09:24:22+00:00"
+            },
+            {
+              "type": "Normal",
+              "reason": "Started",
+              "message": "Container started",
+              "count": 2,
+              "resource": "prediction-api-6c7895984c-684zx",
+              "kind": "Pod",
+              "last_timestamp": "2026-11-14 09:24:29+00:00"
+            },
+            {
+              "type": "Warning",
+              "reason": "Unhealthy",
+              "message": "Startup probe failed: Get \"http://10.244.0.5:8000/health/live\": dial tcp 10.244.0.5:8000: connect: connection refused",
+              "count": 25,
+              "resource": "prediction-api-6c7895984c-684zx",
+              "kind": "Pod",
+              "last_timestamp": "2026-11-14 09:23:53+00:00"
+            },
+            {
+              "type": "Normal",
+              "reason": "Killing",
+              "message": "Container prediction-api failed startup probe, will be restarted",
+              "count": 1,
+              "resource": "prediction-api-6c7895984c-684zx",
+              "kind": "Pod",
+              "last_timestamp": "2026-11-14 09:24:04+00:00"
+            },
+            {
+              "type": "Normal",
+              "reason": "SandboxChanged",
+              "message": "Pod sandbox changed, it will be killed and re-created.",
+              "count": 1,
+              "resource": "prediction-api-6c7895984c-684zx",
+              "kind": "Pod",
+              "last_timestamp": "2026-11-14 11:45:12+00:00"
+            },
+            {
+              "type": "Normal",
+              "reason": "Pulled",
+              "message": "Container image \"mlops-prediction:0390ac27a2e2499ba9cd76017c9794b6\" already present on machine and can be accessed by the pod",
+              "count": 1,
+              "resource": "prediction-api-6c7895984c-684zx",
+              "kind": "Pod",
+              "last_timestamp": "2026-11-14 11:45:19+00:00"
+            },
+            {
+              "type": "Normal",
+              "reason": "Created",
+              "message": "Container created",
+              "count": 1,
+              "resource": "prediction-api-6c7895984c-684zx",
+              "kind": "Pod",
+              "last_timestamp": "2026-11-14 11:45:20+00:00"
+            },
+            {
+              "type": "Normal",
+              "reason": "Started",
+              "message": "Container started",
+              "count": 1,
+              "resource": "prediction-api-6c7895984c-684zx",
+              "kind": "Pod",
+              "last_timestamp": "2026-11-14 11:45:23+00:00"
+            },
+            {
+              "type": "Warning",
+              "reason": "Unhealthy",
+              "message": "Startup probe failed: Get \"http://10.244.0.2:8000/health/live\": dial tcp 10.244.0.2:8000: connect: connection refused",
+              "count": 10,
+              "resource": "prediction-api-6c7895984c-684zx",
+              "kind": "Pod",
+              "last_timestamp": "2026-11-14 11:45:42+00:00"
+            },
+            {
+              "type": "Normal",
+              "reason": "Killing",
+              "message": "Stopping container prediction-api",
+              "count": 1,
+              "resource": "prediction-api-6c7895984c-684zx",
+              "kind": "Pod",
+              "last_timestamp": "2026-11-14 11:57:12+00:00"
+            },
+            {
+              "type": "Normal",
+              "reason": "Scheduled",
+              "message": "Successfully assigned mlops/prediction-api-6c7895984c-6qncz to assignment03-control-plane",
+              "count": 1,
+              "resource": "prediction-api-6c7895984c-6qncz",
+              "kind": "Pod",
+              "last_timestamp": "2026-11-14 09:22:54+00:00"
+            },
+            {
+              "type": "Normal",
+              "reason": "Pulled",
+              "message": "Container image \"mlops-prediction:0390ac27a2e2499ba9cd76017c9794b6\" already present on machine and can be accessed by the pod",
+              "count": 2,
+              "resource": "prediction-api-6c7895984c-6qncz",
+              "kind": "Pod",
+              "last_timestamp": "2026-11-14 09:24:21+00:00"
+            },
+            {
+              "type": "Normal",
+              "reason": "Created",
+              "message": "Container created",
+              "count": 2,
+              "resource": "prediction-api-6c7895984c-6qncz",
+              "kind": "Pod",
+              "last_timestamp": "2026-11-14 09:24:22+00:00"
+            },
+            {
+              "type": "Normal",
+              "reason": "Started",
+              "message": "Container started",
+              "count": 1,
+              "resource": "prediction-api-6c7895984c-6qncz",
+              "kind": "Pod",
+              "last_timestamp": "2026-11-14 09:23:05+00:00"
+            },
+            {
+              "type": "Warning",
+              "reason": "Unhealthy",
+              "message": "Startup probe failed: Get \"http://10.244.0.6:8000/health/live\": dial tcp 10.244.0.6:8000: connect: connection refused",
+              "count": 25,
+              "resource": "prediction-api-6c7895984c-6qncz",
+              "kind": "Pod",
+              "last_timestamp": "2026-11-14 09:23:53+00:00"
+            },
+            {
+              "type": "Normal",
+              "reason": "Killing",
+              "message": "Container prediction-api failed startup probe, will be restarted",
+              "count": 1,
+              "resource": "prediction-api-6c7895984c-6qncz",
+              "kind": "Pod",
+              "last_timestamp": "2026-11-14 09:24:05+00:00"
+            },
+            {
+              "type": "Normal",
+              "reason": "SandboxChanged",
+              "message": "Pod sandbox changed, it will be killed and re-created.",
+              "count": 1,
+              "resource": "prediction-api-6c7895984c-6qncz",
+              "kind": "Pod",
+              "last_timestamp": "2026-11-14 11:45:13+00:00"
+            },
+            {
+              "type": "Normal",
+              "reason": "Pulled",
+              "message": "Container image \"mlops-prediction:0390ac27a2e2499ba9cd76017c9794b6\" already present on machine and can be accessed by the pod",
+              "count": 1,
+              "resource": "prediction-api-6c7895984c-6qncz",
+              "kind": "Pod",
+              "last_timestamp": "2026-11-14 11:45:22+00:00"
+            },
+            {
+              "type": "Normal",
+              "reason": "Created",
+              "message": "Container created",
+              "count": 1,
+              "resource": "prediction-api-6c7895984c-6qncz",
+              "kind": "Pod",
+              "last_timestamp": "2026-11-14 11:45:22+00:00"
+            },
+            {
+              "type": "Normal",
+              "reason": "Started",
+              "message": "Container started",
+              "count": 1,
+              "resource": "prediction-api-6c7895984c-6qncz",
+              "kind": "Pod",
+              "last_timestamp": "2026-11-14 11:45:24+00:00"
+            },
+            {
+              "type": "Warning",
+              "reason": "Unhealthy",
+              "message": "Startup probe failed: Get \"http://10.244.0.6:8000/health/live\": dial tcp 10.244.0.6:8000: connect: connection refused",
+              "count": 9,
+              "resource": "prediction-api-6c7895984c-6qncz",
+              "kind": "Pod",
+              "last_timestamp": "2026-11-14 11:45:41+00:00"
+            },
+            {
+              "type": "Normal",
+              "reason": "Killing",
+              "message": "Stopping container prediction-api",
+              "count": 1,
+              "resource": "prediction-api-6c7895984c-6qncz",
+              "kind": "Pod",
+              "last_timestamp": "2026-11-14 11:57:23+00:00"
+            },
+            {
+              "type": "Normal",
+              "reason": "SuccessfulCreate",
+              "message": "Created pod: prediction-api-6c7895984c-6qncz",
+              "count": 1,
+              "resource": "prediction-api-6c7895984c",
+              "kind": "ReplicaSet",
+              "last_timestamp": "2026-11-14 09:22:54+00:00"
+            },
+            {
+              "type": "Normal",
+              "reason": "SuccessfulCreate",
+              "message": "Created pod: prediction-api-6c7895984c-684zx",
+              "count": 1,
+              "resource": "prediction-api-6c7895984c",
+              "kind": "ReplicaSet",
+              "last_timestamp": "2026-11-14 09:22:54+00:00"
+            },
+            {
+              "type": "Normal",
+              "reason": "SuccessfulDelete",
+              "message": "Deleted pod: prediction-api-6c7895984c-684zx",
+              "count": 1,
+              "resource": "prediction-api-6c7895984c",
+              "kind": "ReplicaSet",
+              "last_timestamp": "2026-11-14 11:57:12+00:00"
+            },
+            {
+              "type": "Normal",
+              "reason": "SuccessfulDelete",
+              "message": "Deleted pod: prediction-api-6c7895984c-6qncz",
+              "count": 1,
+              "resource": "prediction-api-6c7895984c",
+              "kind": "ReplicaSet",
+              "last_timestamp": "2026-11-14 11:57:23+00:00"
+            },
+            {
+              "type": "Normal",
+              "reason": "Scheduled",
+              "message": "Successfully assigned mlops/prediction-api-74bb78dc4f-tlfmw to assignment03-control-plane",
+              "count": 1,
+              "resource": "prediction-api-74bb78dc4f-tlfmw",
+              "kind": "Pod",
+              "last_timestamp": "2026-11-14 11:58:38+00:00"
+            },
+            {
+              "type": "Normal",
+              "reason": "Pulled",
+              "message": "Container image \"mlops-prediction:0390ac27a2e2499ba9cd76017c9794b6\" already present on machine and can be accessed by the pod",
+              "count": 1,
+              "resource": "prediction-api-74bb78dc4f-tlfmw",
+              "kind": "Pod",
+              "last_timestamp": "2026-11-14 11:58:39+00:00"
+            },
+            {
+              "type": "Normal",
+              "reason": "Created",
+              "message": "Container created",
+              "count": 1,
+              "resource": "prediction-api-74bb78dc4f-tlfmw",
+              "kind": "Pod",
+              "last_timestamp": "2026-11-14 11:58:39+00:00"
+            },
+            {
+              "type": "Normal",
+              "reason": "Started",
+              "message": "Container started",
+              "count": 1,
+              "resource": "prediction-api-74bb78dc4f-tlfmw",
+              "kind": "Pod",
+              "last_timestamp": "2026-11-14 11:58:39+00:00"
+            },
+            {
+              "type": "Warning",
+              "reason": "Unhealthy",
+              "message": "Startup probe failed: Get \"http://10.244.0.10:8000/health/live\": dial tcp 10.244.0.10:8000: connect: connection refused",
+              "count": 2,
+              "resource": "prediction-api-74bb78dc4f-tlfmw",
+              "kind": "Pod",
+              "last_timestamp": "2026-11-14 11:58:43+00:00"
+            },
+            {
+              "type": "Warning",
+              "reason": "Unhealthy",
+              "message": "Readiness probe failed: HTTP probe failed with statuscode: 503",
+              "count": 2,
+              "resource": "prediction-api-74bb78dc4f-tlfmw",
+              "kind": "Pod",
+              "last_timestamp": "2026-11-14 11:58:47+00:00"
+            },
+            {
+              "type": "Normal",
+              "reason": "Killing",
+              "message": "Stopping container prediction-api",
+              "count": 1,
+              "resource": "prediction-api-74bb78dc4f-tlfmw",
+              "kind": "Pod",
+              "last_timestamp": "2026-11-14 11:58:47+00:00"
+            },
+            {
+              "type": "Normal",
+              "reason": "SuccessfulCreate",
+              "message": "Created pod: prediction-api-74bb78dc4f-tlfmw",
+              "count": 1,
+              "resource": "prediction-api-74bb78dc4f",
+              "kind": "ReplicaSet",
+              "last_timestamp": "2026-11-14 11:58:38+00:00"
+            },
+            {
+              "type": "Normal",
+              "reason": "SuccessfulDelete",
+              "message": "Deleted pod: prediction-api-74bb78dc4f-tlfmw",
+              "count": 1,
+              "resource": "prediction-api-74bb78dc4f",
+              "kind": "ReplicaSet",
+              "last_timestamp": "2026-11-14 11:58:47+00:00"
+            },
+            {
+              "type": "Normal",
+              "reason": "Scheduled",
+              "message": "Successfully assigned mlops/prediction-api-795c65996-mz66t to assignment03-control-plane",
+              "count": 1,
+              "resource": "prediction-api-795c65996-mz66t",
+              "kind": "Pod",
+              "last_timestamp": "2026-11-14 11:56:57+00:00"
+            },
+            {
+              "type": "Normal",
+              "reason": "Pulled",
+              "message": "Container image \"mlops-prediction:0390ac27a2e2499ba9cd76017c9794b6\" already present on machine and can be accessed by the pod",
+              "count": 1,
+              "resource": "prediction-api-795c65996-mz66t",
+              "kind": "Pod",
+              "last_timestamp": "2026-11-14 11:56:58+00:00"
+            },
+            {
+              "type": "Normal",
+              "reason": "Created",
+              "message": "Container created",
+              "count": 1,
+              "resource": "prediction-api-795c65996-mz66t",
+              "kind": "Pod",
+              "last_timestamp": "2026-11-14 11:56:58+00:00"
+            },
+            {
+              "type": "Normal",
+              "reason": "Started",
+              "message": "Container started",
+              "count": 1,
+              "resource": "prediction-api-795c65996-mz66t",
+              "kind": "Pod",
+              "last_timestamp": "2026-11-14 11:56:59+00:00"
+            },
+            {
+              "type": "Warning",
+              "reason": "Unhealthy",
+              "message": "Startup probe failed: Get \"http://10.244.0.8:8000/health/live\": dial tcp 10.244.0.8:8000: connect: connection refused",
+              "count": 6,
+              "resource": "prediction-api-795c65996-mz66t",
+              "kind": "Pod",
+              "last_timestamp": "2026-11-14 11:57:10+00:00"
+            },
+            {
+              "type": "Normal",
+              "reason": "Killing",
+              "message": "Stopping container prediction-api",
+              "count": 1,
+              "resource": "prediction-api-795c65996-mz66t",
+              "kind": "Pod",
+              "last_timestamp": "2026-11-14 11:58:58+00:00"
+            },
+            {
+              "type": "Normal",
+              "reason": "Scheduled",
+              "message": "Successfully assigned mlops/prediction-api-795c65996-ws9sb to assignment03-control-plane",
+              "count": 1,
+              "resource": "prediction-api-795c65996-ws9sb",
+              "kind": "Pod",
+              "last_timestamp": "2026-11-14 11:57:12+00:00"
+            },
+            {
+              "type": "Normal",
+              "reason": "Pulled",
+              "message": "Container image \"mlops-prediction:0390ac27a2e2499ba9cd76017c9794b6\" already present on machine and can be accessed by the pod",
+              "count": 1,
+              "resource": "prediction-api-795c65996-ws9sb",
+              "kind": "Pod",
+              "last_timestamp": "2026-11-14 11:57:13+00:00"
+            },
+            {
+              "type": "Normal",
+              "reason": "Created",
+              "message": "Container created",
+              "count": 1,
+              "resource": "prediction-api-795c65996-ws9sb",
+              "kind": "Pod",
+              "last_timestamp": "2026-11-14 11:57:13+00:00"
+            },
+            {
+              "type": "Normal",
+              "reason": "Started",
+              "message": "Container started",
+              "count": 1,
+              "resource": "prediction-api-795c65996-ws9sb",
+              "kind": "Pod",
+              "last_timestamp": "2026-11-14 11:57:14+00:00"
+            },
+            {
+              "type": "Warning",
+              "reason": "Unhealthy",
+              "message": "Startup probe failed: Get \"http://10.244.0.9:8000/health/live\": dial tcp 10.244.0.9:8000: connect: connection refused",
+              "count": 4,
+              "resource": "prediction-api-795c65996-ws9sb",
+              "kind": "Pod",
+              "last_timestamp": "2026-11-14 11:57:20+00:00"
+            },
+            {
+              "type": "Normal",
+              "reason": "Killing",
+              "message": "Stopping container prediction-api",
+              "count": 1,
+              "resource": "prediction-api-795c65996-ws9sb",
+              "kind": "Pod",
+              "last_timestamp": "2026-11-14 11:59:11+00:00"
+            },
+            {
+              "type": "Warning",
+              "reason": "Unhealthy",
+              "message": "Readiness probe failed: Get \"http://10.244.0.9:8000/health/ready\": dial tcp 10.244.0.9:8000: connect: connection refused",
+              "count": 1,
+              "resource": "prediction-api-795c65996-ws9sb",
+              "kind": "Pod",
+              "last_timestamp": "2026-11-14 11:59:13+00:00"
+            },
+            {
+              "type": "Normal",
+              "reason": "SuccessfulCreate",
+              "message": "Created pod: prediction-api-795c65996-mz66t",
+              "count": 1,
+              "resource": "prediction-api-795c65996",
+              "kind": "ReplicaSet",
+              "last_timestamp": "2026-11-14 11:56:57+00:00"
+            },
+            {
+              "type": "Normal",
+              "reason": "SuccessfulCreate",
+              "message": "Created pod: prediction-api-795c65996-ws9sb",
+              "count": 1,
+              "resource": "prediction-api-795c65996",
+              "kind": "ReplicaSet",
+              "last_timestamp": "2026-11-14 11:57:12+00:00"
+            },
+            {
+              "type": "Normal",
+              "reason": "SuccessfulDelete",
+              "message": "Deleted pod: prediction-api-795c65996-mz66t",
+              "count": 1,
+              "resource": "prediction-api-795c65996",
+              "kind": "ReplicaSet",
+              "last_timestamp": "2026-11-14 11:58:58+00:00"
+            },
+            {
+              "type": "Normal",
+              "reason": "SuccessfulDelete",
+              "message": "Deleted pod: prediction-api-795c65996-ws9sb",
+              "count": 1,
+              "resource": "prediction-api-795c65996",
+              "kind": "ReplicaSet",
+              "last_timestamp": "2026-11-14 11:59:11+00:00"
+            },
+            {
+              "type": "Normal",
+              "reason": "Scheduled",
+              "message": "Successfully assigned mlops/prediction-api-bc967df94-mgmb9 to assignment03-control-plane",
+              "count": 1,
+              "resource": "prediction-api-bc967df94-mgmb9",
+              "kind": "Pod",
+              "last_timestamp": "2026-11-14 11:56:34+00:00"
+            },
+            {
+              "type": "Normal",
+              "reason": "Pulled",
+              "message": "Container image \"mlops-prediction:0390ac27a2e2499ba9cd76017c9794b6\" already present on machine and can be accessed by the pod",
+              "count": 1,
+              "resource": "prediction-api-bc967df94-mgmb9",
+              "kind": "Pod",
+              "last_timestamp": "2026-11-14 11:56:35+00:00"
+            },
+            {
+              "type": "Normal",
+              "reason": "Created",
+              "message": "Container created",
+              "count": 1,
+              "resource": "prediction-api-bc967df94-mgmb9",
+              "kind": "Pod",
+              "last_timestamp": "2026-11-14 11:56:35+00:00"
+            },
+            {
+              "type": "Normal",
+              "reason": "Started",
+              "message": "Container started",
+              "count": 1,
+              "resource": "prediction-api-bc967df94-mgmb9",
+              "kind": "Pod",
+              "last_timestamp": "2026-11-14 11:56:36+00:00"
+            },
+            {
+              "type": "Warning",
+              "reason": "Unhealthy",
+              "message": "Startup probe failed: Get \"http://10.244.0.7:8000/health/live\": dial tcp 10.244.0.7:8000: connect: connection refused",
+              "count": 3,
+              "resource": "prediction-api-bc967df94-mgmb9",
+              "kind": "Pod",
+              "last_timestamp": "2026-11-14 11:56:40+00:00"
+            },
+            {
+              "type": "Warning",
+              "reason": "Unhealthy",
+              "message": "Readiness probe failed: HTTP probe failed with statuscode: 503",
+              "count": 4,
+              "resource": "prediction-api-bc967df94-mgmb9",
+              "kind": "Pod",
+              "last_timestamp": "2026-11-14 11:56:57+00:00"
+            },
+            {
+              "type": "Normal",
+              "reason": "Killing",
+              "message": "Stopping container prediction-api",
+              "count": 1,
+              "resource": "prediction-api-bc967df94-mgmb9",
+              "kind": "Pod",
+              "last_timestamp": "2026-11-14 11:56:57+00:00"
+            },
+            {
+              "type": "Normal",
+              "reason": "SuccessfulCreate",
+              "message": "Created pod: prediction-api-bc967df94-mgmb9",
+              "count": 1,
+              "resource": "prediction-api-bc967df94",
+              "kind": "ReplicaSet",
+              "last_timestamp": "2026-11-14 11:56:34+00:00"
+            },
+            {
+              "type": "Normal",
+              "reason": "SuccessfulDelete",
+              "message": "Deleted pod: prediction-api-bc967df94-mgmb9",
+              "count": 1,
+              "resource": "prediction-api-bc967df94",
+              "kind": "ReplicaSet",
+              "last_timestamp": "2026-11-14 11:56:57+00:00"
+            },
+            {
+              "type": "Normal",
+              "reason": "ScalingReplicaSet",
+              "message": "Scaled up replica set prediction-api-6c7895984c from 0 to 2",
+              "count": 1,
+              "resource": "prediction-api",
+              "kind": "Deployment",
+              "last_timestamp": "2026-11-14 09:22:54+00:00"
+            },
+            {
+              "type": "Normal",
+              "reason": "ScalingReplicaSet",
+              "message": "Scaled up replica set prediction-api-bc967df94 from 0 to 1",
+              "count": 1,
+              "resource": "prediction-api",
+              "kind": "Deployment",
+              "last_timestamp": "2026-11-14 11:56:33+00:00"
+            },
+            {
+              "type": "Normal",
+              "reason": "ScalingReplicaSet",
+              "message": "Scaled down replica set prediction-api-bc967df94 from 1 to 0",
+              "count": 1,
+              "resource": "prediction-api",
+              "kind": "Deployment",
+              "last_timestamp": "2026-11-14 11:56:57+00:00"
+            },
+            {
+              "type": "Normal",
+              "reason": "ScalingReplicaSet",
+              "message": "Scaled up replica set prediction-api-795c65996 from 0 to 1",
+              "count": 1,
+              "resource": "prediction-api",
+              "kind": "Deployment",
+              "last_timestamp": "2026-11-14 11:56:57+00:00"
+            },
+            {
+              "type": "Normal",
+              "reason": "ScalingReplicaSet",
+              "message": "Scaled down replica set prediction-api-6c7895984c from 2 to 1",
+              "count": 1,
+              "resource": "prediction-api",
+              "kind": "Deployment",
+              "last_timestamp": "2026-11-14 11:57:12+00:00"
+            },
+            {
+              "type": "Normal",
+              "reason": "ScalingReplicaSet",
+              "message": "Scaled up replica set prediction-api-795c65996 from 1 to 2",
+              "count": 1,
+              "resource": "prediction-api",
+              "kind": "Deployment",
+              "last_timestamp": "2026-11-14 11:57:12+00:00"
+            },
+            {
+              "type": "Normal",
+              "reason": "ScalingReplicaSet",
+              "message": "Scaled down replica set prediction-api-6c7895984c from 1 to 0",
+              "count": 1,
+              "resource": "prediction-api",
+              "kind": "Deployment",
+              "last_timestamp": "2026-11-14 11:57:23+00:00"
+            },
+            {
+              "type": "Normal",
+              "reason": "ScalingReplicaSet",
+              "message": "Scaled up replica set prediction-api-74bb78dc4f from 0 to 1",
+              "count": 1,
+              "resource": "prediction-api",
+              "kind": "Deployment",
+              "last_timestamp": "2026-11-14 11:58:38+00:00"
+            },
+            {
+              "type": "Normal",
+              "reason": "ScalingReplicaSet",
+              "message": "Scaled down replica set prediction-api-74bb78dc4f from 1 to 0",
+              "count": 1,
+              "resource": "prediction-api",
+              "kind": "Deployment",
+              "last_timestamp": "2026-11-14 11:58:47+00:00"
+            },
+            {
+              "type": "Normal",
+              "reason": "ScalingReplicaSet",
+              "message": "Scaled up replica set prediction-api-696cb7c7f9 from 0 to 1",
+              "count": 1,
+              "resource": "prediction-api",
+              "kind": "Deployment",
+              "last_timestamp": "2026-11-14 11:58:48+00:00"
+            },
+            {
+              "type": "Normal",
+              "reason": "ScalingReplicaSet",
+              "message": "(combined from similar events): Scaled down replica set prediction-api-795c65996 from 1 to 0",
+              "count": 3,
+              "resource": "prediction-api",
+              "kind": "Deployment",
+              "last_timestamp": "2026-11-14 11:59:11+00:00"
+            }
+          ],
+          "health_scope": "Deployment readiness and rollout; end-to-end prediction is not probed."
+        },
+        "error": null,
+        "duration_ms": 896.817,
+        "request_id": "1dc418da738a48b3a90882a1ae6dccfd"
+      },
+      {
+        "evidence_id": "646ff19208fd",
+        "tool": "kubernetes_list_services",
+        "status": "ok",
+        "data": {
+          "namespace": "mlops",
+          "services": [
+            {
+              "name": "prediction-api",
+              "type": "ClusterIP",
+              "cluster_ip": "10.96.119.133",
+              "selector": {
+                "app": "prediction-api"
+              },
+              "ports": [
+                {
+                  "port": 80,
+                  "target_port": "http"
+                }
+              ]
+            }
+          ]
+        },
+        "error": null,
+        "duration_ms": 24.756,
+        "request_id": "1dc418da738a48b3a90882a1ae6dccfd"
+      }
+    ]
+  },
+  "reader_authorization": "[REDACTED]"
+}

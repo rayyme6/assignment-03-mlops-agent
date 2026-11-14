@@ -113,3 +113,12 @@ Commits are made when each milestone is verified. Commit timestamps reflect when
 - Real Airflow logs placed the decisive quality-gate exception beyond a long startup preamble. The summary now prioritizes structured error/warning messages and searches the full sanitized log before producing concise diagnostics.
 - Three regression cases cover late decisive errors and structured log events; 63 targeted planner/review/regression tests passed with Ruff checks.
 - The controlled Airflow run failed only its quality gate after three attempts, with all four upstream stages successful. Diagnosis is refreshed from that existing run without retriggering training.
+
+## Final live assessment and failure recovery
+
+- Final checks: 153 tests passed in 31.04 seconds, Ruff lint/format and whitespace checks passed. Source fingerprint and JUnit results are retained.
+- Five final conversations returned successful tool observations across DVC, MLflow, Airflow and Kubernetes; actual isolated historical DVC restoration matched the recorded hash and left the checkout intact.
+- The combined assessment selects RF5, verifies its historical DVC hash, reports the distinct deployed run and healthy rollout, and retains uncertainty about retraining without a freshness/degradation policy. No assessment initiated training.
+- Real Kubernetes injection produced replacement-Pod liveness200/readiness503 while RollingUpdate preserved Service200. Configuration restoration returned two ready replicas and successful prediction; reader permissions deny writes and other-namespace reads.
+- Real Airflow injection failed the0.99 gate after three attempts, with all four upstream stages successful and no approved artifacts. Its dirty provenance is disclosed; the earlier successful run has clean provenance.
+- Submission artifacts include architecture, tool permissions, technical report, engineering defense, five actual conversations and failure/recovery evidence. Live LLM use remains unverified without a key.

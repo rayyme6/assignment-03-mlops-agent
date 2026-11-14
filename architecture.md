@@ -35,7 +35,7 @@ The mandatory mixed assessment has an explicit dependency graph in both modes:
 4. Inspect current DVC changes, Kubernetes application health and recent Airflow runs.
 5. Explain recorded facts and missing evidence. A hash mismatch becomes an uncertainty that requires investigation.
 
-This graph never invokes a training mutation. `MODEL_MAX_AGE_DAYS`, when explicitly configured and exceeded, supports a retraining recommendation. Without a freshness policy or supplied degradation evidence, necessity remains undetermined. A failed deployment establishes an operational problem; it does not establish model degradation.
+This graph never invokes a training mutation. `MODEL_MAX_AGE_DAYS`, when explicitly configured and exceeded, supports a retraining recommendation. Without a freshness policy, recorded failed gate or supplied degradation evidence, necessity remains undetermined. A failed deployment establishes an operational problem; it does not establish model degradation.
 
 Each `ToolResult` has a unique `evidence_id`, request ID, tool name, status, duration, data and optional error. The statuses are `ok`, `invalid`, `denied`, `timeout` and `unavailable`. Failed calls have no operational data. A timeout means the outcome is uncertain, particularly for writes; the caller should inspect state before retrying.
 

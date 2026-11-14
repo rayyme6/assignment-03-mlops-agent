@@ -2,6 +2,8 @@
 
 A Python conversational agent connects DVC dataset provenance, MLflow experiment tracking, the authenticated Airflow 3 API and Kubernetes application health. Every operational statement carries tool evidence; failed calls remain explicit uncertainties. Training and cluster restarts require operator confirmation.
 
+The repository includes 153 passing automated tests plus real DVC restoration, MLflow comparisons, successful Airflow execution and Kubernetes readiness/prediction exports.
+
 See [architecture](architecture.md), [technical report](docs/technical_report.md), [engineering defense](docs/defense.md), [evidence exports](evidence/README.md) and the [commit/work log](WORK_LOG.md).
 
 ## Install
@@ -101,7 +103,7 @@ python scripts/create_reader_config.py
 export KUBECONFIG="$PWD/.kube/agent-config"
 ```
 
-The helper applies the reader role, creates a one-hour service-account token and writes it with mode 0600; it never prints the token. Keep the operator kubeconfig for explicit deployment administration. Reader credentials cannot restart the application unless the separate optional restart role is deliberately granted.
+The helper applies the reader role, creates a one-hour service-account token and writes it with mode 0600; it never prints the token. Keep the operator kubeconfig for explicit deployment administration. Reader credentials cannot restart the application unless the separate optional restart role is deliberately granted. For a later refresh, choose a new `--output` filename and point `KUBECONFIG` at it; the helper deliberately refuses to replace an existing credential file.
 
 The renderer checks the approved metadata and uses a unique image tag and model identity annotation. Review the rendered manifest before applying. Static manifests specify two replicas, ClusterIP, resource bounds, non-root execution and health probes. `kubernetes/rbac.yaml` grants namespace-local reads; use a restricted kubeconfig for the operational agent. `restart-role.yaml` is a separately opt-in patch permission. Deployment containers do not mount service-account tokens. These bootstrap commands are explicit operator actions; the conversational agent itself never deploys automatically.
 

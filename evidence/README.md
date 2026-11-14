@@ -1,7 +1,27 @@
 # Exported evidence
 
-`python scripts/collect_evidence.py` writes fresh, sanitized observations to the ignored `evidence/live/` directory. Five conversations retain tool status, request IDs, duration and original structured evidence. Pass `--trigger` only when intentionally authorizing the approved training DAG. Failures remain failures in the export.
+All service snapshots below are actual observations from the isolated assignment environment on 14 November 2026. JSON files retain timestamps, tool status, request/evidence IDs and structured responses. Local test doubles are identified separately; they are not proof of running infrastructure.
 
-The reviewed submission snapshot is stored in this directory as JSON exports. Each snapshot identifies the observation time, environment and whether results come from actual services or controlled test doubles. Never interpret test-double results as proof that infrastructure was running.
+| Export | Observed evidence |
+| --- | --- |
+| [verification.json](verification.json), [tests.xml](tests.xml) | 153 passing local tests; lint/format checks; exact source fingerprint and scope. |
+| [model-candidates.json](model-candidates.json) | Actual MLflow-backed RF5/RF50 comparison on the same fixed holdout. |
+| [airflow-auth.json](airflow-auth.json) | Missing-token401, invalid-token403 and authenticated200; no credentials exported. |
+| [airflow-success.json](airflow-success.json) | Confirmed real training run; all five stages successful; timestamped task transitions. |
+| [airflow-failure.json](airflow-failure.json) | Deliberately stricter quality gate, retry/task evidence and the agent's actual diagnosis. |
+| [kubernetes-success.json](kubernetes-success.json) | Two ready replicas, real model version/provenance and successful Service prediction. |
+| [kubernetes-failure.json](kubernetes-failure.json) | Missing-model replacement Pod returns503; old Pods preserve Service availability; configuration restored and prediction recovered. |
+| [failures.json](failures.json) | Two isolated local fault exercises: missing numeric data and explicitly injected metric below the real MLflow-backed gate. |
+| [conversations.json](conversations.json) | Five live agent conversations across all four services plus isolated historical DVC restoration. |
 
-Historical reproduction uses a separate temporary Git clone and DVC checkout, preserving the working tree. See the technical report for observed hashes, real model runs, workflow task states and deployment conditions.
+The successful Airflow model metadata records source95f992e with `git_dirty=false`. The deployed model and the highest-scoring later candidate have different run IDs; the agent reports this difference and does not promote or retrain automatically. LLM protocol tests use mocked responses because no live key was supplied. Hosted CI status is recorded separately from local verification.
+
+Refresh actual observations with:
+
+```bash
+python -m scripts.collect_evidence --reproduce-data
+# Explicitly authorizes the approved training DAG and records real task statuses:
+python -m scripts.collect_evidence --trigger --max-wait 120 --reproduce-data
+```
+
+Fresh exports go under ignored `evidence/live/`. Review and sanitize them before retaining a submission snapshot. DVC restoration fetches to a temporary directory and verifies the historical content hash without modifying the original checkout. Failed calls remain failures in every export. Credentials, kubeconfig contents and tokens are excluded.

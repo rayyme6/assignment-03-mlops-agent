@@ -1,7 +1,7 @@
 {
   "kind": "local-automated-verification",
-  "observed_at": "2026-11-14T11:58:43.687830+00:00",
-  "source_commit": "4fc968c905b44dbd1d289f1e3a2f29eea2468d92",
+  "observed_at": "2026-11-14T12:08:06.142043+00:00",
+  "source_commit": "a65b8502c0d74140c24ddb0546e14158b70d6268",
   "branch": "assignment03-completion",
   "scope": "Real local automated checks; ordinary external service calls use test doubles. This does not establish hosted CI or live service availability.",
   "environment": {
@@ -25,12 +25,17 @@
       "command": ".venv/bin/python -m pytest -q --junitxml=evidence/tests.xml",
       "status": "passed",
       "exit_code": 0,
-      "tests": 150,
+      "tests": 153,
       "failures": 0,
       "errors": 0,
       "skipped": 0,
-      "duration_seconds": 27.805,
+      "duration_seconds": 31.026,
       "junit": "evidence/tests.xml"
+    },
+    {
+      "command": "git diff --check",
+      "status": "passed",
+      "exit_code": 0
     }
   ],
   "ci_review": {
@@ -38,13 +43,35 @@
     "airflow_environment": "Separate constrained Apache Airflow 3.1.3 installation; no incompatible base optional extra",
     "hosted_ci_executed": false
   },
-  "source_commit_is_parent": true,
+  "source_commit_is_parent": false,
   "working_tree_changes": true,
-  "tested_tracked_diff_sha256": "ca947fac270c41799074c0c273505e3c676bad5de3b8b6c2061c08f7d6276b56",
-  "source_note": "Checks include the uncommitted review fixes on this parent; the diff fingerprint identifies the tested tracked edits.",
+  "source_note": "Checks ran against committed executable/config source at source_commit. Current uncommitted tracked changes are documentation or evidence only.",
   "review_fixes": [
     "Failed quality gate is no longer contradicted by undetermined retraining necessity.",
     "Freshness policies must be finite and positive; missing timestamps remain explicit uncertainties.",
-    "HTTP(S) tracking endpoints with embedded credentials, queries or fragments are rejected before evaluation logging."
+    "HTTP(S) tracking endpoints with embedded credentials, queries or fragments are rejected before evaluation logging.",
+    "Airflow diagnostics prioritize structured exceptions after long log preambles and inspect complete returned evidence."
+  ],
+  "source_working_tree_changes": false,
+  "source_tree_sha256": "1742623bd7124d1ca4a7908f437026f861cbdce80c41194f69120381cb27fc85",
+  "source_tree_file_count": 50,
+  "source_tree_method": "SHA256 of UTF-8 canonical JSON mapping each sorted tracked source/config path to its file SHA256; roots listed in source_fingerprint_scope",
+  "source_fingerprint_scope": [
+    "agent",
+    "api",
+    "training",
+    "dags",
+    "scripts",
+    "tests",
+    ".github",
+    "kubernetes",
+    "pyproject.toml",
+    "requirements.txt",
+    "Dockerfile",
+    "docker-compose.yml",
+    "dvc.yaml",
+    "params.yaml",
+    ".dvc",
+    "data/iris.csv.dvc"
   ]
 }
