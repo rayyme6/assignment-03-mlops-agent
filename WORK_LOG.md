@@ -100,3 +100,10 @@ Commits are made when each milestone is verified. Commit timestamps reflect when
 - Rejected nonfinite/nonpositive freshness policies and retained explicit uncertainty for missing run timestamps.
 - Rejected credential-bearing HTTP tracking endpoints before evaluation reads or logging; authentication belongs in separate MLflow environment variables.
 - Full suite: 150 tests passed in 27.82 seconds. Ruff lint, formatting and whitespace checks passed; the verification export records the exact tested source diff.
+
+## Real data, experiment and workflow evidence
+
+- Reproduced the final source through DVC and refreshed `dvc.lock` with real approved artifacts and measured metrics.
+- Real MLflow comparison: RF5 macro F1 0.9333333333; RF50/RF100 macro F1 0.8997493734 on the same fixed holdout. These are candidates, not production-readiness conclusions.
+- Authenticated Airflow 3 API verification observed missing-token401, invalid-token403 and valid-token200 without exporting credentials.
+- Confirmed training DAG run `agent__c0a48e7ac9154efd9d92f3dfc831c971` finished successfully with all five task states successful. Its model metadata records source95f992e and `git_dirty=false`.
