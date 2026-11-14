@@ -86,3 +86,10 @@ Commits are made when each milestone is verified. Commit timestamps reflect when
 - Removed the incompatible Airflow optional extra; the constrained Airflow environment remains separate from the agent environment.
 - Added a helper for one-hour namespace-scoped reader credentials, stored only in ignored mode-0600 kubeconfig files.
 - Added 19 targeted review regression cases; 53 planner/review cases pass with lint/format checks.
+
+## Submission documentation and resumed verification
+
+- Added complete installation/service launch instructions, architecture diagrams, all tool definitions/permissions, rubric traceability, engineering defense and known limitations.
+- Retained actual local failure exports and machine-readable test evidence; no live LLM execution is claimed without an API key.
+- On resuming, the isolated Kubernetes deployment was 2/2 ready. The demonstration MLflow/Airflow containers had stopped during an external runtime interruption; only these assignment containers are being restarted.
+- Full resumed checks: 135 pytest cases passed, Ruff lint and formatting passed. Further live workflow and controlled rollout observations will be added separately.

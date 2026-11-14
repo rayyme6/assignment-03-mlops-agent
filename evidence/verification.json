@@ -1,0 +1,41 @@
+{
+  "kind": "local-automated-verification",
+  "observed_at": "2026-11-14T11:55:00.063559+00:00",
+  "source_commit": "d6e832c52ce7d1bdccb9a47fa65b19de07e5fffe",
+  "branch": "assignment03-completion",
+  "scope": "Real local automated checks; ordinary external service calls use test doubles. This does not establish hosted CI or live service availability.",
+  "environment": {
+    "python": "3.10.12",
+    "pytest": "8.4.2",
+    "ruff": "0.14.4"
+  },
+  "checks": [
+    {
+      "command": ".venv/bin/ruff check .",
+      "status": "passed",
+      "exit_code": 0
+    },
+    {
+      "command": ".venv/bin/ruff format --check .",
+      "status": "passed",
+      "exit_code": 0,
+      "formatted_python_files": 33
+    },
+    {
+      "command": ".venv/bin/python -m pytest -q --junitxml=evidence/tests.xml",
+      "status": "passed",
+      "exit_code": 0,
+      "tests": 135,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "duration_seconds": 14.078,
+      "junit": "evidence/tests.xml"
+    }
+  ],
+  "ci_review": {
+    "fresh_clone_data_generation": "python scripts/create_dataset.py precedes pytest",
+    "airflow_environment": "Separate constrained Apache Airflow 3.1.3 installation; no incompatible base optional extra",
+    "hosted_ci_executed": false
+  }
+}
