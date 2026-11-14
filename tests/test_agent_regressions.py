@@ -144,3 +144,43 @@ def test_one_confirmation_allows_only_one_llm_mutation_attempt():
     )
     assert writes == ["triggered"]
     assert [result.status for result in response.evidence] == ["ok", "denied"]
+
+
+@pytest.mark.parametrize("structured", [True, False])
+def test_actionable_log_error_after_long_startup_preamble_is_reported(structured):
+    executor = ToolExecutor()
+    error = "Quality gate failed: f1_score=0.899749373433584 min_f1=0.99"
+    preamble = "startup boilerplate " * 80
+    logs = (
+        {
+            "content": [{"event": preamble, "level": "info"}, {"event": error, "level": "error"}],
+            "continuation_token": None,
+        }
+        if structured
+        else preamble + "\nERROR " + error
+    )
+
+    def task_logs():
+        return {"logs": logs}
+
+    executor.register("airflow_task_logs", task_logs)
+    response = Orchestrator(executor).chat("tool airflow_task_logs {}")
+    excerpts = [fact for fact in response.facts if "Recorded log excerpt:" in fact]
+    assert len(excerpts) == 1
+    assert error in excerpts[0]
+    assert len(excerpts[0]) < 500
+    assert any(
+        "Recorded logs identify a failed quality gate" in item for item in response.recommendations
+    )
+
+
+def test_plain_log_error_after_long_single_line_preamble_is_reported():
+    executor = ToolExecutor()
+
+    def pod_logs():
+        return {"logs": "startup " * 100 + " ERROR Model unavailable; readiness disabled"}
+
+    executor.register("kubernetes_pod_logs", pod_logs)
+    response = Orchestrator(executor).chat("tool kubernetes_pod_logs {}")
+    assert any("ERROR Model unavailable; readiness disabled" in fact for fact in response.facts)
+    assert not any("failed quality gate" in item for item in response.recommendations)

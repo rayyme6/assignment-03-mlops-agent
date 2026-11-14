@@ -24,6 +24,48 @@ Use the smallest relevant reads and stop when evidence is sufficient. Do not out
 prose: the application will render the evidence. End with 'Evidence collected'."""
 
 
+def _log_excerpt(logs, limit=400):
+    """Prefer actionable recorded events over startup boilerplate in a bounded excerpt."""
+    messages = []
+
+    def visit(value, level=""):
+        if isinstance(value, dict):
+            level = str(value.get("level", level)).lower()
+            for key, item in value.items():
+                if key in {"event", "message", "exc_value"} and isinstance(item, str):
+                    visit(item, level)
+                elif isinstance(item, (dict, list)):
+                    visit(item, level)
+        elif isinstance(value, list):
+            for item in value:
+                visit(item, level)
+        elif isinstance(value, str):
+            for text in value.splitlines():
+                if not text.strip():
+                    continue
+                match = re.search(
+                    r"quality gate failed|\b(?:error|exception|failed|unavailable|not found)\b",
+                    text,
+                    re.IGNORECASE,
+                )
+                priority = (
+                    0
+                    if match and match.group().lower() == "quality gate failed"
+                    else 1
+                    if match
+                    else 2
+                    if level in {"error", "critical", "warning"}
+                    else 3
+                )
+                start = max(0, match.start() - 50) if match else 0
+                messages.append((priority, text[start : start + limit]))
+
+    visit(logs)
+    if messages:
+        return min(messages, key=lambda item: item[0])[1]
+    return json.dumps(logs, ensure_ascii=True)[:limit]
+
+
 def default_executor(repo_path: str | Path = ".") -> ToolExecutor:
     from agent.tools.airflow_tools import AirflowTools
     from agent.tools.dvc_tools import DVCTools
@@ -361,9 +403,10 @@ class Orchestrator:
                                 f"{ref} Pod {pod.get('name')}: observed container reasons {', '.join(reasons)}; restart count {container.get('restart_count', 0)}."
                             )
             if result.tool in {"kubernetes_pod_logs", "airflow_task_logs"}:
-                excerpt = json.dumps(data.get("logs", ""), ensure_ascii=True)[:400]
+                logs = data.get("logs", "")
+                excerpt = _log_excerpt(logs)
                 response.facts.append(f"{ref} Recorded log excerpt: {excerpt}")
-                if "quality gate failed" in excerpt.lower():
+                if "quality gate failed" in json.dumps(logs, ensure_ascii=True).lower():
                     response.recommendations.append(
                         "Recorded logs identify a failed quality gate; inspect its metric and threshold before authorizing a revised training run."
                     )

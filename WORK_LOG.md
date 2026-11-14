@@ -107,3 +107,9 @@ Commits are made when each milestone is verified. Commit timestamps reflect when
 - Real MLflow comparison: RF5 macro F1 0.9333333333; RF50/RF100 macro F1 0.8997493734 on the same fixed holdout. These are candidates, not production-readiness conclusions.
 - Authenticated Airflow 3 API verification observed missing-token401, invalid-token403 and valid-token200 without exporting credentials.
 - Confirmed training DAG run `agent__c0a48e7ac9154efd9d92f3dfc831c971` finished successfully with all five task states successful. Its model metadata records source95f992e and `git_dirty=false`.
+
+## Live diagnosis regression corrected
+
+- Real Airflow logs placed the decisive quality-gate exception beyond a long startup preamble. The summary now prioritizes structured error/warning messages and searches the full sanitized log before producing concise diagnostics.
+- Three regression cases cover late decisive errors and structured log events; 63 targeted planner/review/regression tests passed with Ruff checks.
+- The controlled Airflow run failed only its quality gate after three attempts, with all four upstream stages successful. Diagnosis is refreshed from that existing run without retriggering training.
