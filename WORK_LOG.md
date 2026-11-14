@@ -78,3 +78,11 @@ Commits are made when each milestone is verified. Commit timestamps reflect when
 - Executed both failures: invalid numeric data blocked every downstream artifact; injected F1 0.4 failed the real MLflow-backed 0.85 quality gate without promoting a model. Results are retained in `evidence/failures.json`.
 - Added regressions for deployed-versus-selected run identity, absent identity, failed-gate recommendations, nonstandard DVC pointer names, and one-use confirmation capabilities.
 - Connected the user-supplied GitHub repository and created `assignment03-completion`; the existing divergent `origin/main` is preserved for review.
+
+## Final review hardening
+
+- Rejected non-object LLM arguments (including null/false/empty arrays) and wired the bounded timeout configuration into every integration.
+- Clarified that a Deployment template's run annotation describes desired state, rather than proving what every serving Pod has loaded during rollout.
+- Removed the incompatible Airflow optional extra; the constrained Airflow environment remains separate from the agent environment.
+- Added a helper for one-hour namespace-scoped reader credentials, stored only in ignored mode-0600 kubeconfig files.
+- Added 19 targeted review regression cases; 53 planner/review cases pass with lint/format checks.

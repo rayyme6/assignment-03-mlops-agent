@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import math
 import os
 import re
 from datetime import datetime, timezone
@@ -29,10 +30,19 @@ def default_executor(repo_path: str | Path = ".") -> ToolExecutor:
     from agent.tools.kubernetes_tools import KubernetesTools
     from agent.tools.mlflow_tools import MLflowTools
 
+    try:
+        timeout = float(os.getenv("TOOL_TIMEOUT_SECONDS", "15"))
+    except ValueError as exc:
+        raise ValueError("TOOL_TIMEOUT_SECONDS must be finite, positive and at most 120") from exc
+    if not math.isfinite(timeout) or not 0 < timeout <= 120:
+        raise ValueError("TOOL_TIMEOUT_SECONDS must be finite, positive and at most 120")
+    # MLflow accepts integer seconds; other adapters retain fractional precision.
+    os.environ.setdefault("MLFLOW_HTTP_REQUEST_TIMEOUT", str(math.ceil(timeout)))
+    os.environ.setdefault("MLFLOW_HTTP_REQUEST_MAX_RETRIES", "0")
     executor = ToolExecutor()
     integrations = {
         "dvc": (
-            DVCTools(repo_path),
+            DVCTools(repo_path, timeout=timeout),
             [
                 "list_datasets",
                 "dataset_version",
@@ -53,11 +63,11 @@ def default_executor(repo_path: str | Path = ".") -> ToolExecutor:
             ],
         ),
         "airflow": (
-            AirflowTools(),
+            AirflowTools(timeout=timeout),
             ["list_dags", "list_runs", "run_status", "trigger_dag", "failed_tasks", "task_logs"],
         ),
         "kubernetes": (
-            KubernetesTools(),
+            KubernetesTools(timeout=timeout),
             [
                 "list_pods",
                 "list_deployments",
@@ -93,7 +103,7 @@ class Orchestrator:
         def call(name, arguments=None):
             result = self.executor.execute(
                 name,
-                arguments or {},
+                {} if arguments is None else arguments,
                 request_id,
                 [item for item in request.confirmed_tools if item not in used_mutations],
             )
@@ -248,7 +258,9 @@ class Orchestrator:
                 for item in calls[:8]:
                     try:
                         args = json.loads(item["arguments"])
-                    except (ValueError, KeyError):
+                        if not isinstance(args, dict):
+                            raise ValueError("Tool arguments must be a JSON object")
+                    except (ValueError, TypeError, KeyError):
                         args = {"invalid_json": True}
                     result = call(item.get("name", "unknown"), args)
                     items.append(
@@ -387,7 +399,7 @@ class Orchestrator:
                 deployed = cluster.data.get("deployment", {}).get("model_run_id")
                 if deployed:
                     response.facts.append(
-                        f"[{cluster.evidence_id}] Deployed model run {deployed}; selected candidate run {selected['run_id']}; match={deployed == selected['run_id']}."
+                        f"[{cluster.evidence_id}] Deployment template model run {deployed}; selected candidate run {selected['run_id']}; match={deployed == selected['run_id']}."
                     )
                 else:
                     response.uncertainties.append(
