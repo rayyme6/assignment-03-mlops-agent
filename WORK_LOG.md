@@ -122,3 +122,9 @@ Commits are made when each milestone is verified. Commit timestamps reflect when
 - Real Kubernetes injection produced replacement-Pod liveness200/readiness503 while RollingUpdate preserved Service200. Configuration restoration returned two ready replicas and successful prediction; reader permissions deny writes and other-namespace reads.
 - Real Airflow injection failed the0.99 gate after three attempts, with all four upstream stages successful and no approved artifacts. Its dirty provenance is disclosed; the earlier successful run has clean provenance.
 - Submission artifacts include architecture, tool permissions, technical report, engineering defense, five actual conversations and failure/recovery evidence. Live LLM use remains unverified without a key.
+
+## GitHub publication
+
+- Pushed the completed history to `assignment03-completion` and opened draft PR#1 against the preserved main branch.
+- Checked hosted CI rather than inferring success from local checks. Both jobs stopped before any steps because GitHub reports an account billing lock. Recorded the provider message and run link in `evidence/hosted-ci.json`.
+- All authorized implementation, local checks and real-service demonstrations are complete. Hosted execution requires the repository owner to resolve that external account restriction.

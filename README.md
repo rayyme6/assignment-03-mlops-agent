@@ -148,3 +148,7 @@ Ordinary tests use mocked external calls and include actual local data/training/
 Use `git log --reverse --oneline` to inspect sequenced milestones. To submit, connect this repository to the intended GitHub remote and push the commits; repository publication is independent of local checks.
 
 To stop only this demonstration, use `docker compose -p assignment03 stop` and `kind delete cluster --name assignment03 --kubeconfig "$PWD/.kube/assignment03-config"`. Keep volumes if retaining MLflow experiments.
+
+## Submission and hosted checks
+
+The completed implementation is published on `assignment03-completion` with [pull request #1](https://github.com/rayyme6/assignment-03-mlops-agent/pull/1). Local checks pass all153tests. GitHub currently prevents hosted jobs from starting because of an account billing lock; [the actual status export](evidence/hosted-ci.json) records that restriction. Resolve the account restriction and rerun `assignment-checks` to obtain a hosted result. The existing main branch is preserved pending review.

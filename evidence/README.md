@@ -4,6 +4,7 @@ All service snapshots below are actual observations from the isolated assignment
 
 | Export | Observed evidence |
 | --- | --- |
+| [hosted-ci.json](hosted-ci.json) | Hosted jobs did not start because GitHub reported an account billing lock; local results remain separate. |
 | [verification.json](verification.json), [tests.xml](tests.xml) | 153 passing local tests; lint/format checks; exact source fingerprint and scope. |
 | [model-candidates.json](model-candidates.json) | Actual MLflow-backed RF5/RF50 comparison on the same fixed holdout. |
 | [airflow-auth.json](airflow-auth.json) | Missing-token401, invalid-token403 and authenticated200; no credentials exported. |
