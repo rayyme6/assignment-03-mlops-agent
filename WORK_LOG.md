@@ -53,3 +53,11 @@ Commits are made when each milestone is verified. Commit timestamps reflect when
 - Kubernetes configuration includes two replicas, ClusterIP, probes, bounded resources and namespace-scoped RBAC.
 - Added container builds, isolated local Compose services, DVC pipeline and dataset bootstrap instructions.
 - All 12 training/inference/DAG tests passed. In this environment FastAPI tests require sandbox escalation because cross-thread event-loop signaling is restricted.
+
+## Conversational integration verified
+
+- Added a typed request/evidence API, validated tool registry and JSON audit events containing tool/status/duration/request IDs only.
+- Added the supported OpenAI Responses function-calling planner and an explicit offline planner with a structured tool escape hatch.
+- Combined assessment follows selected-run provenance through historical DVC metadata and checks live cluster/workflow state. Reports separate facts, uncertainties and recommended actions.
+- Mutation confirmation is supplied by the operator outside model-generated arguments. No assessment starts retraining implicitly.
+- Added 29 orchestration tests, including planner/tool failures, provenance mismatch, strict authorization and no fabricated results.

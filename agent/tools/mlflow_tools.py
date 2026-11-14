@@ -24,6 +24,9 @@ class MLflowTools:
     @property
     def client(self):
         if self._client is None:
+            # Bound unavailable HTTP services; respect explicit operator configuration.
+            os.environ.setdefault("MLFLOW_HTTP_REQUEST_TIMEOUT", "10")
+            os.environ.setdefault("MLFLOW_HTTP_REQUEST_MAX_RETRIES", "0")
             from mlflow.tracking import MlflowClient
 
             self._client = MlflowClient(tracking_uri=self.tracking_uri)

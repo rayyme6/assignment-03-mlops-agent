@@ -95,19 +95,19 @@ class KubernetesTools:
                                 "reason": _get(c, "reason"), "message": _get(c, "message")}
                                for c in _get(status, "conditions", []) or []]}
 
-    def list_pods(self, namespace=None) -> dict:
+    def list_pods(self, namespace: str | None = None) -> dict:
         namespace = self._namespace(namespace)
         self._connect()
         data = self.core_api.list_namespaced_pod(namespace, _request_timeout=self.timeout)
         return {"namespace": namespace, "pods": [self._pod(pod) for pod in data.items]}
 
-    def list_deployments(self, namespace=None) -> dict:
+    def list_deployments(self, namespace: str | None = None) -> dict:
         namespace = self._namespace(namespace)
         self._connect()
         data = self.apps_api.list_namespaced_deployment(namespace, _request_timeout=self.timeout)
         return {"namespace": namespace, "deployments": [self._deployment(item) for item in data.items]}
 
-    def list_services(self, namespace=None) -> dict:
+    def list_services(self, namespace: str | None = None) -> dict:
         namespace = self._namespace(namespace)
         self._connect()
         data = self.core_api.list_namespaced_service(namespace, _request_timeout=self.timeout)
@@ -121,7 +121,7 @@ class KubernetesTools:
                                        for port in _get(spec, "ports", []) or []]})
         return {"namespace": namespace, "services": services}
 
-    def pod_logs(self, name: str, tail_lines: int = 100, namespace=None) -> dict:
+    def pod_logs(self, name: str, tail_lines: int = 100, namespace: str | None = None) -> dict:
         namespace = self._namespace(namespace)
         name = _name(name)
         if isinstance(tail_lines, bool) or not isinstance(tail_lines, int) or not 1 <= tail_lines <= 1000:
@@ -134,7 +134,7 @@ class KubernetesTools:
                       r"\1\2[REDACTED]", logs)
         return {"namespace": namespace, "pod": name, "logs": logs}
 
-    def events(self, namespace=None) -> dict:
+    def events(self, namespace: str | None = None) -> dict:
         namespace = self._namespace(namespace)
         self._connect()
         data = self.core_api.list_namespaced_event(namespace, _request_timeout=self.timeout)
@@ -147,7 +147,7 @@ class KubernetesTools:
                            "last_timestamp": str(_get(event, "last_timestamp") or "")})
         return {"namespace": namespace, "events": events}
 
-    def deployment_health(self, name: str = "prediction-api", namespace=None) -> dict:
+    def deployment_health(self, name: str = "prediction-api", namespace: str | None = None) -> dict:
         namespace = self._namespace(namespace)
         name = _name(name)
         self._connect()
@@ -174,7 +174,9 @@ class KubernetesTools:
                 "events": self.events(namespace)["events"],
                 "health_scope": "Deployment readiness and rollout; end-to-end prediction is not probed."}
 
-    def restart_deployment(self, name="prediction-api", namespace=None, confirmed=False) -> dict:
+    def restart_deployment(
+        self, name: str = "prediction-api", namespace: str | None = None, confirmed: bool = False
+    ) -> dict:
         namespace = self._namespace(namespace)
         name = _name(name)
         if confirmed is not True:

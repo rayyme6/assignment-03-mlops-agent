@@ -22,3 +22,6 @@ htmlcov/
 .kube/
 credentials*
 evidence/live/
+.local/
+.venv-airflow/
+.airflow/
