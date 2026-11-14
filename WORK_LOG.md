@@ -32,3 +32,10 @@ Commits are made when each milestone is verified. Commit timestamps reflect when
 - Multi-tool assessment correlates run provenance, deployment and workflow state; retraining requires evidence and never starts implicitly.
 - At least eight meaningful pytest cases, service errors/timeouts, no fabricated results, rejected unauthorized mutations and secret-free structured audit records.
 - CI lint/tests on pull requests, installation and service launch docs, technical report, five conversations and two diagnosed failures.
+
+## Data and experiment tools verified
+
+- Implemented five DVC and six MLflow operations using bounded subprocess calls and supported Python clients.
+- Added revision/path validation, provenance checks, recent-run metric comparison and registry inspection.
+- `python3 -m pytest -q tests/test_dvc_tools.py tests/test_mlflow_tools.py`: 32 passed.
+- DVC's protected global cache was resolved by selecting a repository-local `DVC_SITE_CACHE_DIR`.
